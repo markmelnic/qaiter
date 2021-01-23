@@ -18,3 +18,15 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User({self.role} - {self.username}, {self.email} - {self.firstname} {self.surname})"
+
+class Table(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.Integer, nullable=False, unique=True)
+    seats = db.Column(db.Integer, nullable=True)
+    description = db.Column(db.Integer, nullable=True)
+    path = db.Column(db.String(20), nullable=False)
+    url = db.Column(db.String(60), nullable=False)
+    imgurl = db.Column(db.String(60), nullable=False)
+
+    def __repr__(self):
+        return f"({self.id}) Table {self.nr} with {self.seats} seats"
