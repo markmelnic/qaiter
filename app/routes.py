@@ -34,14 +34,28 @@ def home(**kwargs):
 
 @app.route("/category/<category_name>", methods=["GET"])
 def category(category_name):
-    id = MenuCategory.query.filter_by(name=category_name).first().id
-    dishes = [dish for dish in MenuDish.query.filter_by(category=id).all()]
+    dishes = MenuCategory.query.filter_by(name=category_name).first().dishes
     return render_template("general/category.pug", dishes=dishes)
 
 @app.route("/dish/<dish_name>", methods=["GET"])
 def dish(dish_name):
     dish = MenuDish.query.filter_by(title=dish_name).first()
     return render_template("general/dish.pug", dish=dish)
+
+CART = {}
+
+@app.route("/cart", methods=["GET"])
+def cart():
+    products = CART
+    return render_template("general/cart.pug", products=CART)
+
+@app.route("/add_to_cart/<dish_name>", methods=["GET"])
+def add_to_cart(dish_name):
+    try:
+        CART[dish_name] += 1
+    except KeyError:
+        CART[dish_name] = 1
+    return redirect(url_for("cart"))
 
 @app.route("/backdoor", methods=["GET"])
 def backdoor():
