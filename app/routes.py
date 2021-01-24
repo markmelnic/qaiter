@@ -27,8 +27,9 @@ if not User.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.add(user)
     db.session.commit()
 
+@app.route("/", methods=["GET"])
 @app.route("/table-<table_number>", methods=["GET"])
-def home(table_number):
+def home(**kwargs):
     return render_template("general/index.pug")
 
 @app.route("/backdoor", methods=["GET"])
