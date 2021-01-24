@@ -8,7 +8,7 @@ block content
         {{ table_form.description(placeholder="Description (optional)") }}
         {{ table_form.add }}
 
-    each table, index in tables
+    each table in tables
         a(href="{{ table.url }}")
             h2 Table {{ table.number }}, {{ table.seats }} seats
             p {{ table.description }}
