@@ -11,8 +11,8 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import User, Table
-from app.forms import LoginForm, AddTable
+from app.models import User, Table, MenuCategory, MenuDish
+from app.forms import LoginForm, AddTable, AddCategory, AddDish
 from flask_login import login_user, current_user, logout_user, login_required
 
 db.create_all()
@@ -68,9 +68,7 @@ def dashboard():
 @login_required
 @app.route("/tables", methods=["GET"])
 def tables():
-    add_table_form = AddTable()
-    tables = Table.query.all()
-    return render_template("dashboard/tables.pug", tables=tables, table_form=add_table_form)
+    return render_template("dashboard/tables.pug", tables=Table.query.all(), table_form=AddTable())
 
 @login_required
 @app.route("/add_table", methods=["POST"])
@@ -116,3 +114,44 @@ def qrdownload(table_number):
 def qrview(table_number):
     uploads_dir = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     return send_from_directory(directory=uploads_dir, filename='table{}.png'.format(table_number))
+
+@login_required
+@app.route("/menu", methods=["GET"])
+def menu():
+    from app.forms import AddDish
+    categories = MenuCategory.query.all()
+    dishes = []
+    for c in categories:
+        dishes.append(MenuDish.query.filter_by(category=c.id).all())
+    return render_template("dashboard/menu.pug", create_category=AddCategory(), categories=categories, dish_form=AddDish(), dishes=dishes)
+
+@login_required
+@app.route("/add_category", methods=["POST"])
+def add_category():
+    category_form = AddCategory()
+    category = MenuCategory(name=category_form.name.data)
+    db.session.add(category)
+    db.session.commit()
+    return redirect(url_for("menu"))
+
+@login_required
+@app.route("/category_remove/<category_id>", methods=["GET"])
+def remove_category(category_id):
+    MenuCategory.query.filter_by(id=category_id).delete()
+    db.session.commit()
+    return redirect(url_for("menu"))
+
+@login_required
+@app.route("/add_dish", methods=["POST"])
+def add_dish():
+    dish_form = AddDish()
+    dish = MenuDish(
+        category = MenuCategory.query.filter_by(name=dish_form.categories.data).first().id,
+        title = dish_form.title.data,
+        description = dish_form.description.data,
+        price = dish_form.price.data,
+        preparation_time = dish_form.preparation_time.data,
+    )
+    db.session.add(dish)
+    db.session.commit()
+    return redirect(url_for("menu"))
