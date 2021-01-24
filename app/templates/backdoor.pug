@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 html(lang="en")
     include includes/head.pug
+
     body
         h1 Log in
         form(method="POST" action="{{ url_for('login') }}")
             {{ login_form.hidden_tag() }}
             {{ login_form.username(placeholder="Username") }}
             {{ login_form.password(placeholder="Password") }}
-            {{ login_form.submit(class="submit_button") }}
-            a(href="") Forgot your password?
-
+            {{ login_form.remember(class="form-check-input") }}
+            {{ login_form.remember.label(class="form-check-label") }}
+            {{ login_form.submit }}
+            // a(href="forgot") Forgot your password?
