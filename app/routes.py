@@ -118,11 +118,8 @@ def qrview(table_number):
 @login_required
 @app.route("/menu", methods=["GET"])
 def menu():
-    from app.forms import AddDish
     categories = MenuCategory.query.all()
-    dishes = []
-    for c in categories:
-        dishes.append(MenuDish.query.filter_by(category=c.id).all())
+    dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
     return render_template("dashboard/menu.pug", create_category=AddCategory(), categories=categories, dish_form=AddDish(), dishes=dishes)
 
 @login_required
@@ -153,5 +150,12 @@ def add_dish():
         preparation_time = dish_form.preparation_time.data,
     )
     db.session.add(dish)
+    db.session.commit()
+    return redirect(url_for("menu"))
+
+@login_required
+@app.route("/dish_remove/<dish_id>", methods=["GET"])
+def remove_dish(dish_id):
+    MenuDish.query.filter_by(id=dish_id).delete()
     db.session.commit()
     return redirect(url_for("menu"))
