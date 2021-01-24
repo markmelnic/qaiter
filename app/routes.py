@@ -28,9 +28,20 @@ if not User.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.commit()
 
 @app.route("/", methods=["GET"])
-@app.route("/table-<table_number>", methods=["GET"])
+@app.route("/table/<table_number>", methods=["GET"])
 def home(**kwargs):
-    return render_template("general/index.pug")
+    return render_template("general/index.pug", categories=MenuCategory.query.all())
+
+@app.route("/category/<category_name>", methods=["GET"])
+def category(category_name):
+    id = MenuCategory.query.filter_by(name=category_name).first().id
+    dishes = [dish for dish in MenuDish.query.filter_by(category=id).all()]
+    return render_template("general/category.pug", dishes=dishes)
+
+@app.route("/dish/<dish_name>", methods=["GET"])
+def dish(dish_name):
+    dish = MenuDish.query.filter_by(title=dish_name).first()
+    return render_template("general/dish.pug", dish=dish)
 
 @app.route("/backdoor", methods=["GET"])
 def backdoor():
