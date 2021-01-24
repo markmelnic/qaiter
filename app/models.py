@@ -30,3 +30,20 @@ class Table(db.Model):
 
     def __repr__(self):
         return f"({self.id}) Table {self.nr} with {self.seats} seats"
+
+class MenuCategory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    #subcategories = db.relationship('Subcategories', backref='MenuSubCategory', lazy=True)
+    dishes = db.relationship('MenuDish', backref='menu_category', lazy=True)
+
+    def __repr__(self):
+        return f"{self.name}, {self.dishes}"
+
+class MenuDish(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    price = db.Column(db.Integer, nullable=False)
+    preparation_time = db.Column(db.Integer)
+    title = db.Column(db.String(50), nullable=False, unique=True)
+    description = db.Column(db.String(200))
+    category = db.Column(db.Integer, db.ForeignKey('menu_category.id'), nullable=False)
