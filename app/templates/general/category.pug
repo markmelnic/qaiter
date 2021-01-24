@@ -1,0 +1,4 @@
+h1 PUBLIC CATEGORY VIEW
+each dish in dishes
+    br
+    a(href="{{ url_for('home') }}dish/{{ dish.title }}") {{ dish.title }}
