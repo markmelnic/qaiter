@@ -160,6 +160,8 @@ def add_category():
 @login_required
 @app.route("/category_remove/<category_id>", methods=["GET"])
 def remove_category(category_id):
+    for dish in MenuCategory.query.filter_by(id=category_id).first().dishes:
+        db.session.delete(dish)
     MenuCategory.query.filter_by(id=category_id).delete()
     db.session.commit()
     return redirect(url_for("menu"))
