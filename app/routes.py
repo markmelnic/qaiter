@@ -101,7 +101,7 @@ def tables():
 def add_table():
     table_form = AddTable()
 
-    base_url = '/'.join(request.base_url.split("/")[:-1])
+    base_url = request.base_url.replace(url_for("tables"), "")
     qrurl = base_url + "/table-{}".format(table_form.number.data)
     qrfile = 'table{}.png'.format(table_form.number.data)
     qrcode = pyqrcode.create(qrurl, error='Q', version=5, mode='binary')
@@ -109,16 +109,19 @@ def add_table():
     qrpath = 'app/' + app.config['UPLOAD_FOLDER'] + str(qrfile)
     shutil.move(qrfile, qrpath)
 
-    table = Table(
-        number=table_form.number.data,
-        seats=table_form.seats.data,
-        description=table_form.description.data,
-        path=qrpath,
-        url=qrurl,
-        imgurl=base_url + "/" + qrpath[3:],
-    )
-    db.session.add(table)
-    db.session.commit()
+    if Table.query.filter_by(number=table_form.number.data).first():
+        flash(u"Table already exists", "exists_error")
+    else:
+        table = Table(
+            number=table_form.number.data,
+            seats=table_form.seats.data,
+            description=table_form.description.data,
+            path=qrpath,
+            url=qrurl,
+            imgurl=base_url + qrpath[3:],
+        )
+        db.session.add(table)
+        db.session.commit()
     return redirect(url_for("tables"))
 
 @login_required
@@ -152,9 +155,13 @@ def menu():
 @app.route("/add_category", methods=["POST"])
 def add_category():
     category_form = AddCategory()
-    category = MenuCategory(name=category_form.name.data)
-    db.session.add(category)
-    db.session.commit()
+
+    if MenuCategory.query.filter_by(name=category_form.name.data).first():
+        flash(u"Dish already exists", "exists_error")
+    else:
+        category = MenuCategory(name=category_form.name.data)
+        db.session.add(category)
+        db.session.commit()
     return redirect(url_for("menu"))
 
 @login_required
@@ -170,15 +177,19 @@ def remove_category(category_id):
 @app.route("/add_dish", methods=["POST"])
 def add_dish():
     dish_form = AddDish()
-    dish = MenuDish(
-        category = MenuCategory.query.filter_by(name=dish_form.categories.data).first().id,
-        title = dish_form.title.data,
-        description = dish_form.description.data,
-        price = dish_form.price.data,
-        preparation_time = dish_form.preparation_time.data,
-    )
-    db.session.add(dish)
-    db.session.commit()
+
+    if MenuDish.query.filter_by(title=dish_form.title.data).first():
+        flash(u"Dish already exists", "exists_error")
+    else:
+        dish = MenuDish(
+            category = MenuCategory.query.filter_by(name=dish_form.categories.data).first().id,
+            title = dish_form.title.data,
+            description = dish_form.description.data,
+            price = dish_form.price.data,
+            preparation_time = dish_form.preparation_time.data,
+        )
+        db.session.add(dish)
+        db.session.commit()
     return redirect(url_for("menu"))
 
 @login_required

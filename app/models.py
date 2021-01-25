@@ -29,7 +29,7 @@ class Table(db.Model):
     imgurl = db.Column(db.String(60), nullable=False)
 
     def __repr__(self):
-        return f"({self.id}) Table {self.nr} with {self.seats} seats"
+        return f"({self.id}) Table {self.number} with {self.seats} seats"
 
 class MenuCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
