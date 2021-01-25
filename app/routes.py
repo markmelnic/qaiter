@@ -46,8 +46,16 @@ CART = {}
 
 @app.route("/cart", methods=["GET"])
 def cart():
-    products = CART
-    return render_template("general/cart.pug", products=CART)
+    products = []
+    preparation_time = 0
+    total_price = 0
+    if CART != {}:
+        for product in CART:
+            dish = MenuDish.query.filter_by(title=product).first()
+            products.append((dish.title, dish.price, CART[product], dish.preparation_time))
+        total_price = sum([p[1]*p[2] for p in products])
+        preparation_time = max([p[3] for p in products])
+    return render_template("general/cart.pug", products=products, preparation_time=preparation_time, total_price=total_price)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
 def add_to_cart(dish_name):
@@ -157,7 +165,7 @@ def add_category():
     category_form = AddCategory()
 
     if MenuCategory.query.filter_by(name=category_form.name.data).first():
-        flash(u"Dish already exists", "exists_error")
+        flash(u"Category already exists", "exists_error")
     else:
         category = MenuCategory(name=category_form.name.data)
         db.session.add(category)

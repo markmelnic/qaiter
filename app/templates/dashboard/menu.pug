@@ -8,7 +8,9 @@ block content
 
     h1 Add new dish
     form(method="POST" action="{{ url_for('add_dish') }}")
-        {{ dish_form.categories(placeholder="Categories") }}
+        select(id="categories" name="categories" placeholder="Categories" required="")
+            each category in categories
+                option(value="{{ category.name }}") {{ category.name }}
         {{ dish_form.title(placeholder="Dish title") }}
         {{ dish_form.description(placeholder="Description") }}
         {{ dish_form.price(placeholder="Price") }}

@@ -20,7 +20,7 @@ class AddCategory(FlaskForm):
     add = SubmitField("Create")
 
 class AddDish(FlaskForm):
-    categories = SelectField("Categories", choices=[cat.name for cat in MenuCategory.query.all()], validators = [DataRequired()])
+    categories = SelectField("Categories", validators = [DataRequired()])
     price = IntegerField("Price", validators=[DataRequired(), Length(max=3)])
     preparation_time = IntegerField("Preparation Time", validators=[Length(max=3)])
     title = StringField("Dish title", validators=[DataRequired(), Length(max=50)])
