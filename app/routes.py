@@ -91,7 +91,7 @@ def backdoor():
         return redirect(url_for("dashboard"))
     else:
         login_form = LoginForm()
-        return render_template("backdoor.pug", login_form=login_form)
+        return render_template("backdoor.pug", title="Login", login_form=login_form)
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -117,17 +117,22 @@ def logout():
 @login_required
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    return render_template("dashboard/dashboard.pug")
+    return render_template("dashboard/dashboard.pug", title="Dashboard")
 
 @login_required
 @app.route("/orders", methods=["GET"])
 def orders():
-    return render_template("dashboard/orders.pug", orders=Orders.query.all())
+    return render_template("dashboard/orders.pug", title="Orders", orders=Orders.query.all())
 
 @login_required
 @app.route("/tables", methods=["GET"])
 def tables():
-    return render_template("dashboard/tables.pug", tables=Table.query.all(), table_form=AddTable())
+    return render_template("dashboard/tables.pug", title="Tables", tables=Table.query.all(), table_form=AddTable())
+
+@login_required
+@app.route("/settings", methods=["GET"])
+def settings():
+    return render_template("dashboard/settings.pug", title="Settings", tables=Table.query.all(), table_form=AddTable())
 
 @login_required
 @app.route("/add_table", methods=["POST"])
@@ -182,7 +187,7 @@ def qrview(table_number):
 def menu():
     categories = MenuCategory.query.all()
     dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
-    return render_template("dashboard/menu.pug", create_category=AddCategory(), categories=categories, dish_form=AddDish(), dishes=dishes)
+    return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=AddDish(), dishes=dishes)
 
 @login_required
 @app.route("/add_category", methods=["POST"])
