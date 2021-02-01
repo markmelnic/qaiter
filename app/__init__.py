@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_cors import CORS
+import pretty_errors
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
@@ -11,6 +13,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 app.config["UPLOAD_FOLDER"] = "static/img/qrcodes/"
+
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 sass.compile(dirname=('app/static/scss', 'app/static/css'), output_style='compressed')
 
