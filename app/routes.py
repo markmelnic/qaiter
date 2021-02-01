@@ -11,9 +11,10 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import User, Table, MenuCategory, MenuDish
+from app.models import User, Table, MenuCategory, MenuDish, Orders
 from app.forms import LoginForm, AddTable, AddCategory, AddDish
 from flask_login import login_user, current_user, logout_user, login_required
+from app.utils import *
 
 db.create_all()
 db.session.commit()
@@ -36,7 +37,11 @@ def def_home():
 
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):
-    TABLE_NUMBER = table_number
+    if int(table_number) in [int(table.number) for table in Table.query.all()]:
+        global TABLE_NUMBER
+        TABLE_NUMBER = int(table_number)
+    else:
+        flash(u"Table not found", "table_error")
     return redirect(url_for("def_home"))
 
 @app.route("/category/<category_name>", methods=["GET"])
@@ -51,15 +56,7 @@ def dish(dish_name):
 
 @app.route("/cart", methods=["GET"])
 def cart():
-    products = []
-    preparation_time = 0
-    total_price = 0
-    if CART != {}:
-        for product in CART:
-            dish = MenuDish.query.filter_by(title=product).first()
-            products.append((dish.title, dish.price, CART[product], dish.preparation_time))
-        total_price = sum([p[1]*p[2] for p in products])
-        preparation_time = max([p[3] for p in products])
+    products, total_price, preparation_time = handle_cart(CART, MenuDish)
     return render_template("general/cart.pug", products=products, preparation_time=preparation_time, total_price=total_price)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
@@ -69,6 +66,24 @@ def add_to_cart(dish_name):
     except KeyError:
         CART[dish_name] = 1
     return redirect(url_for("cart"))
+
+@app.route("/order", methods=["GET"])
+def order():
+    products, total_price, preparation_time = handle_cart(CART, MenuDish)
+    order = Orders(
+        products = str(CART),
+        table_number = TABLE_NUMBER,
+        status = True,
+        total_price = total_price,
+        preparation_time = preparation_time,
+        )
+    db.session.add(order)
+    db.session.commit()
+
+    return render_template("general/order.pug", products=products, preparation_time=preparation_time, total_price=total_price)
+
+
+### DASHBOARD ROUTES ###
 
 @app.route("/backdoor", methods=["GET"])
 def backdoor():
@@ -105,6 +120,11 @@ def dashboard():
     return render_template("dashboard/dashboard.pug")
 
 @login_required
+@app.route("/orders", methods=["GET"])
+def orders():
+    return render_template("dashboard/orders.pug", orders=Orders.query.all())
+
+@login_required
 @app.route("/tables", methods=["GET"])
 def tables():
     return render_template("dashboard/tables.pug", tables=Table.query.all(), table_form=AddTable())
@@ -114,8 +134,8 @@ def tables():
 def add_table():
     table_form = AddTable()
 
-    base_url = request.base_url.replace(url_for("tables"), "")
-    qrurl = base_url + "/table-{}".format(table_form.number.data)
+    base_url = request.base_url.replace(url_for("add_table"), "")
+    qrurl = base_url + "/table/{}".format(table_form.number.data)
     qrfile = 'table{}.png'.format(table_form.number.data)
     qrcode = pyqrcode.create(qrurl, error='Q', version=5, mode='binary')
     qrcode.png(qrfile, scale=10, module_color=[0, 0, 0, 128])
