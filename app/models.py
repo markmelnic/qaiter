@@ -47,3 +47,11 @@ class MenuDish(db.Model):
     title = db.Column(db.String(50), nullable=False, unique=True)
     description = db.Column(db.String(200))
     category = db.Column(db.Integer, db.ForeignKey('menu_category.id'), nullable=False)
+
+class Orders(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.Boolean, nullable=False)
+    table_number = db.Column(db.Integer, nullable=False)
+    products = db.Column(db.String(), nullable=False)
+    total_price = db.Column(db.Integer, nullable=False)
+    preparation_time = db.Column(db.Integer, nullable=False)
