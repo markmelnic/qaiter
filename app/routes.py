@@ -27,10 +27,17 @@ if not User.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.add(user)
     db.session.commit()
 
+TABLE_NUMBER = None
+CART = {}
+
 @app.route("/", methods=["GET"])
-@app.route("/table/<table_number>", methods=["GET"])
-def home(**kwargs):
+def def_home():
     return render_template("general/index.pug", categories=MenuCategory.query.all())
+
+@app.route("/table/<table_number>", methods=["GET"])
+def tab_home(table_number):
+    TABLE_NUMBER = table_number
+    return redirect(url_for("def_home"))
 
 @app.route("/category/<category_name>", methods=["GET"])
 def category(category_name):
@@ -41,8 +48,6 @@ def category(category_name):
 def dish(dish_name):
     dish = MenuDish.query.filter_by(title=dish_name).first()
     return render_template("general/dish.pug", dish=dish)
-
-CART = {}
 
 @app.route("/cart", methods=["GET"])
 def cart():

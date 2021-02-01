@@ -1,4 +1,6 @@
+a(href="{{ url_for('backdoor') }}") LOGIN
+
 h1 PUBLIC MENU VIEW
 each category in categories
     br
-    a(href="category/{{ category.name }}") {{ category.name }}
+    a(href="{{ url_for('def_home') }}category/{{ category.name }}") {{ category.name }}
