@@ -1,0 +1,15 @@
+if not total_price > 0
+    h1 WOW, SUCH EMPTY
+else
+    h1 YOUR ORDER
+    table(style='width:auto', border='1')
+        each product in products
+            tr
+                th
+                    h4 {{ product[2] }}x {{ product[0] }} - {{ product[1] }}
+
+    h1 TOTAL = {{total_price}} lei
+    h2 APROX PREP TIME = {{preparation_time}} minutes
+
+    a(href="{{ url_for('order') }}") ORDER
+

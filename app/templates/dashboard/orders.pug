@@ -1,0 +1,7 @@
+
+table(style='width:100%', border='1')
+    each order in orders
+        tr
+            th
+                [{{order.status}}] Table {{order.table_number}} - {{order.products}}, {{order.total_price}} lei
+
