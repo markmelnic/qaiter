@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User({self.role} - {self.username}, {self.email} - {self.firstname} {self.surname})"
 
-class Table(db.Model):
+class Tables(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.Integer, nullable=False, unique=True)
     seats = db.Column(db.Integer, nullable=True)

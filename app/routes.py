@@ -11,7 +11,7 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import User, Table, MenuCategory, MenuDish, Orders
+from app.models import User, Tables, MenuCategory, MenuDish, Orders
 from app.forms import LoginForm, AddTable, AddCategory, AddDish
 from flask_login import login_user, current_user, logout_user, login_required
 from app.utils import *
@@ -37,7 +37,7 @@ def def_home():
 
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):
-    if int(table_number) in [int(table.number) for table in Table.query.all()]:
+    if int(table_number) in [int(table.number) for table in Tables.query.all()]:
         global TABLE_NUMBER, CART
         TABLE_NUMBER = int(table_number)
         CART = {}
@@ -123,13 +123,13 @@ def dashboard():
 @login_required
 @app.route("/orders", methods=["GET"])
 def orders():
-    completed_orders = Orders.query.filter_by(status=False)
+    completed_orders = Orders.query.filter_by(status=False).all()
     completed_products = []
     for order in completed_orders:
         temp = eval(order.products)
         completed_products.append([(t, temp[t]) for t in temp])
 
-    active_orders = Orders.query.filter_by(status=True)
+    active_orders = Orders.query.filter_by(status=True).all()
     active_products = []
     for order in active_orders:
         temp = eval(order.products)
@@ -148,12 +148,12 @@ def complete_order(order_id):
 @login_required
 @app.route("/tables", methods=["GET"])
 def tables():
-    return render_template("dashboard/tables.pug", title="Tables", tables=Table.query.all(), table_form=AddTable())
+    return render_template("dashboard/tables.pug", title="Tables", tables=Tables.query.all(), table_form=AddTable())
 
 @login_required
 @app.route("/settings", methods=["GET"])
 def settings():
-    return render_template("dashboard/settings.pug", title="Settings", tables=Table.query.all(), table_form=AddTable())
+    return render_template("dashboard/settings.pug", title="Settings", tables=Tables.query.all(), table_form=AddTable())
 
 @login_required
 @app.route("/add_table", methods=["POST"])
@@ -168,10 +168,10 @@ def add_table():
     qrpath = 'app/' + app.config['UPLOAD_FOLDER'] + str(qrfile)
     shutil.move(qrfile, qrpath)
 
-    if Table.query.filter_by(number=table_form.number.data).first():
+    if Tables.query.filter_by(number=table_form.number.data).first():
         flash(u"Table already exists", "exists_error")
     else:
-        table = Table(
+        table = Tables(
             number=table_form.number.data,
             seats=table_form.seats.data,
             description=table_form.description.data,
@@ -186,8 +186,8 @@ def add_table():
 @login_required
 @app.route("/table_remove/<table_number>", methods=["GET"])
 def remove_table(table_number):
-    os.remove(Table.query.filter_by(number=table_number).first().path)
-    Table.query.filter_by(number=table_number).delete()
+    os.remove(Tables.query.filter_by(number=table_number).first().path)
+    Tables.query.filter_by(number=table_number).delete()
     db.session.commit()
     return redirect(url_for("tables"))
 
