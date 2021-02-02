@@ -1,3 +1,4 @@
+import datetime
 from app import db, login_manager
 from flask_login import UserMixin
 
@@ -50,8 +51,10 @@ class MenuDish(db.Model):
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.String, default=datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"))
+    completed = db.Column(db.String)
     status = db.Column(db.Boolean, nullable=False)
     table_number = db.Column(db.Integer, nullable=False)
-    products = db.Column(db.String(), nullable=False)
+    products = db.Column(db.String, nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
     preparation_time = db.Column(db.Integer, nullable=False)
