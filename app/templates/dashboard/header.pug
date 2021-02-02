@@ -1,7 +1,19 @@
 header
+    - var navs = [['dashboard', 'general overview', 'Dashboard', 'dashboard.png'], ['orders', 'view and manage orders', 'Orders', 'list.png'], ['tables', 'manage tables and view qr codes', 'Tables', 'qr.png'], ['menu', 'modify the menu or add options', 'Menu', 'menu.png'], ['settings', 'staff & technical options', 'Settings', 'settings.png']]
+
+    h1 el Cafe.
+
     nav
-        a(href="dashboard") Dashboard
-        a(href="menu") Menu
-        a(href="orders") Orders
-        a(href="tables") Tables
+        each nav in navs
+            if title|lower == nav[0]
+                - var status = "act"
+            else
+                - var status = "inact"
+
+            a(href="{{nav[0]}}" class=status)
+                img(src="{{ url_for( 'static', filename='img/icons/' ) }}{{nav[3]}}")
+                div
+                    h4 {{nav[1]}}
+                    h2 {{nav[2]}}
+
     a(href="{{ url_for('logout') }}") Logout
