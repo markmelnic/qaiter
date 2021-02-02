@@ -1,4 +1,4 @@
-import os, shutil, pyqrcode
+import os, shutil, pyqrcode, json, datetime
 from flask import (
     request,
     render_template,
@@ -38,8 +38,9 @@ def def_home():
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):
     if int(table_number) in [int(table.number) for table in Table.query.all()]:
-        global TABLE_NUMBER
+        global TABLE_NUMBER, CART
         TABLE_NUMBER = int(table_number)
+        CART = {}
     else:
         flash(u"Table not found", "table_error")
     return redirect(url_for("def_home"))
@@ -117,12 +118,32 @@ def logout():
 @login_required
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    return render_template("dashboard/dashboard.pug", title="Dashboard")
+    return render_template("dashboard/layout.pug", title="Dashboard")
 
 @login_required
 @app.route("/orders", methods=["GET"])
 def orders():
-    return render_template("dashboard/orders.pug", title="Orders", orders=Orders.query.all())
+    completed_orders = Orders.query.filter_by(status=False)
+    completed_products = []
+    for order in completed_orders:
+        temp = eval(order.products)
+        completed_products.append([(t, temp[t]) for t in temp])
+
+    active_orders = Orders.query.filter_by(status=True)
+    active_products = []
+    for order in active_orders:
+        temp = eval(order.products)
+        active_products.append([(t, temp[t]) for t in temp])
+    return render_template("dashboard/orders.pug", title="Orders", active_orders=active_orders,  active_products=active_products, completed_orders=completed_orders, completed_products=completed_products)
+
+@login_required
+@app.route("/complete_order/<order_id>", methods=["GET"])
+def complete_order(order_id):
+    order = Orders.query.filter_by(id=order_id).first()
+    order.status = False
+    order.completed = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
+    db.session.commit()
+    return redirect(url_for("orders"))
 
 @login_required
 @app.route("/tables", methods=["GET"])
