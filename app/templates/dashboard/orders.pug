@@ -1,7 +1,55 @@
+extends dashboard/layout.pug
 
-table(style='width:100%', border='1')
-    each order in orders
+block content
+    table
+        caption Active Orders
         tr
-            th
-                [{{order.status}}] Table {{order.table_number}} - {{order.products}}, {{order.total_price}} lei
+            th(class="right") Created
+            th(class="right") TABLE
+            th(class="right") ITEMS
+            th QTY
+            th TOTAL
 
+        each order, index in active_orders
+            each prod, qty, item in active_products[index]
+                if item == 0
+                    tr(class="firstrow")
+                        td(rowspan="{{active_products[index]|length}}" class=" right") {{order.created}}
+                        td(rowspan="{{active_products[index]|length}}" class=" right") {{order.table_number}}
+                        td(class="right") {{prod}}
+                        td {{qty}}
+                        td(rowspan="{{active_products[index]|length}}") {{order.total_price}} lei
+
+                        td(rowspan="{{active_products[index]|length}}")
+                            a(href="complete_order/{{order.id}}")
+                                img(class="button complete" src="{{ url_for( 'static', filename='img/icons/check-mark.png' ) }}")
+                else
+                    tr
+                        td(class="right") {{prod}}
+                        td {{qty}}
+
+    table
+        caption Completed Orders
+        tr
+            th(class="right") Created
+            th(class="right") Completed
+            th(class="right") TABLE
+            th(class="right") ITEMS
+            th QTY
+            th TOTAL
+
+        each order, index in completed_orders
+            each prod, qty, item in completed_products[index]
+                if item == 0
+                    tr(class="firstrow")
+                        td(rowspan="{{completed_products[index]|length}}" class=" right") {{order.created}}
+                        td(rowspan="{{completed_products[index]|length}}" class=" right") {{order.completed}}
+                        td(rowspan="{{completed_products[index]|length}}" class=" right") {{order.table_number}}
+                        td(class="right") {{prod}}
+                        td {{qty}}
+                        td(rowspan="{{completed_products[index]|length}}") {{order.total_price}} lei
+
+                else
+                    tr
+                        td(class="right") {{prod}}
+                        td {{qty}}
