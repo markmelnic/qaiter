@@ -1,4 +1,4 @@
-extends dashboard/dashboard.pug
+extends dashboard/layout.pug
 
 block content
     h1 Add a table
@@ -8,11 +8,26 @@ block content
         {{ table_form.description(placeholder="Description (optional)") }}
         {{ table_form.add }}
 
-    each table in tables
-        a(href="{{ table.url }}")
-            h2 Table {{ table.number }}, {{ table.seats }} seats
-            p {{ table.description }}
-        img(src="{{ table.imgurl }}" style="max-height: 4em;")
-        a(href="qrview/{{ table.number }}") VIEW
-        a(href="qrdownload/{{ table.number }}") DOWNLOAD
-        a(href="table_remove/{{ table.number }}") REMOVE
+    table
+        caption Tables
+        tr
+            //th URL
+            th Table Number
+            th Seats
+            th Description
+            th IMG
+
+        each table in tables
+            tr(class="tobord")
+                //td
+                //    a(href="{{ table.url }}") URL
+                td {{ table.number }}
+                td {{ table.seats }}
+                td {{ table.description }}
+                td
+                    a(href="qrview/{{ table.number }}")
+                        img(class="qr" src="{{ table.imgurl }}")
+                td 
+                    a(href="qrdownload/{{ table.number }}") DOWNLOAD
+                td 
+                    a(href="table_remove/{{ table.number }}") REMOVE
