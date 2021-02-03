@@ -20,6 +20,10 @@ class AddCategory(FlaskForm):
     name = StringField("Category name", validators=[Length(max=50)])
     add = SubmitField("Create")
 
+class OrderForm(FlaskForm):
+    notes = StringField("Notes")
+    order = SubmitField("Order")
+
 class AddDish(FlaskForm):
     # categories option are left out to be dynamically generated within the template
     categories = SelectField("Categories", validators = [DataRequired()])

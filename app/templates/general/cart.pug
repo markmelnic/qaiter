@@ -11,5 +11,6 @@ else
     h1 TOTAL = {{total_price}} lei
     h2 APROX PREP TIME = {{preparation_time}} minutes
 
-    a(href="{{ url_for('order') }}") ORDER
-
+    form(method="POST" action="{{ url_for('order') }}")
+        {{ order_form.notes}}
+        {{ order_form.order }}

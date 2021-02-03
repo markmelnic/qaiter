@@ -12,7 +12,7 @@ from flask import (
 )
 from app import app, db, bcrypt
 from app.models import User, Tables, MenuCategory, MenuDish, Orders, OrderStatuses
-from app.forms import LoginForm, AddTable, AddCategory, AddDish
+from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -59,8 +59,9 @@ def dish(dish_name):
 
 @app.route("/cart", methods=["GET"])
 def cart():
+    order_form = OrderForm()
     products, total_price, preparation_time = handle_cart(CART, MenuDish)
-    return render_template("general/cart.pug", products=products, preparation_time=preparation_time, total_price=total_price)
+    return render_template("general/cart.pug", products=products, preparation_time=preparation_time, total_price=total_price, order_form=order_form)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
 def add_to_cart(dish_name):
@@ -70,21 +71,28 @@ def add_to_cart(dish_name):
         CART[dish_name] = 1
     return redirect(url_for("cart"))
 
-@app.route("/order", methods=["GET"])
+@app.route("/order", methods=["GET", "POST"])
 def order():
-    global CART
-    products, total_price, preparation_time = handle_cart(CART, MenuDish)
-    order = Orders(
-        products = str(CART),
-        created = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
-        table_number = TABLE_NUMBER,
-        total_price = total_price,
-        preparation_time = preparation_time,
-        )
-    db.session.add(order)
-    db.session.commit()
+    if request.method == 'POST':
+        global CART
+        order_form = OrderForm()
+        products, total_price, preparation_time = handle_cart(CART, MenuDish)
+        order = Orders(
+            products = str(CART),
+            created = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
+            table_number = TABLE_NUMBER,
+            total_price = total_price,
+            preparation_time = preparation_time,
+            notes = order_form.notes.data
+            )
+        db.session.add(order)
+        db.session.commit()
+        CART = {}
+    else:
+        products = []
+        preparation_time = 0
+        total_price = 0
 
-    CART = {}
     return render_template("general/order.pug", products=products, preparation_time=preparation_time, total_price=total_price)
 
 

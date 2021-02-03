@@ -65,3 +65,4 @@ class Orders(db.Model):
     products = db.Column(db.String, nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
     preparation_time = db.Column(db.Integer, nullable=False)
+    notes = db.Column(db.String)
