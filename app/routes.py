@@ -13,7 +13,6 @@ from flask import (
 from app import app, db, bcrypt
 from app.models import User, Tables, MenuCategory, MenuDish, Orders, OrderStatuses
 from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
-from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 
 from flask_login import login_user, current_user, logout_user, login_required
@@ -32,6 +31,9 @@ if not User.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.commit()
 
 TABLE_NUMBER, CART = None, {}
+
+
+### PUBLIC ROUTES ###
 
 @app.route("/", methods=["GET"])
 def def_home():
@@ -247,20 +249,13 @@ def menu():
 @app.route("/add_category", methods=["POST"])
 def add_category():
     category_form = AddCategory(CombinedMultiDict((request.files, request.form)))
-    print(category_form.validate_on_submit())
 
     if MenuCategory.query.filter_by(name=category_form.name.data).first():
         flash(u"Category already exists", "exists_error")
     elif category_form.validate_on_submit():
-        # handle photo
-        thumbnail = category_form.thumbnail.data
-        thumb_name = secure_filename('.'.join([category_form.name.data, thumbnail.filename.split(".")[1]]))
-        thumb_path = os.path.join(app.config['CATGS_FOLDER'], thumb_name)
-        thumbnail.save(thumb_path)
-
         category = MenuCategory(
             name=category_form.name.data,
-            thumbnail = thumb_path[4:]
+            thumbnail = handle_image(category_form.thumbnail.data, category_form.name.data, app.config['CATGS_FOLDER'])
         )
         db.session.add(category)
         db.session.commit()
@@ -291,19 +286,13 @@ def add_dish():
     if MenuDish.query.filter_by(title=dish_form.title.data).first():
         flash(u"Dish already exists", "exists_error")
     elif dish_form.validate_on_submit():
-        # handle photo
-        thumbnail = dish_form.thumbnail.data
-        thumb_name = secure_filename('.'.join([dish_form.title.data, thumbnail.filename.split(".")[1]]))
-        thumb_path = os.path.join(app.config['DSHES_FOLDER'], thumb_name)
-        thumbnail.save(thumb_path)
-
         dish = MenuDish(
             category = dish_form.categories.data,
             title = dish_form.title.data,
             description = dish_form.description.data,
             price = dish_form.price.data,
             preparation_time = dish_form.preparation_time.data,
-            thumbnail = thumb_path[4:]
+            thumbnail = handle_image(dish_form.thumbnail.data, dish_form.title.data, app.config['DSHES_FOLDER'])
         )
         db.session.add(dish)
         db.session.commit()
@@ -315,7 +304,7 @@ def add_dish():
 @login_required
 @app.route("/dish_remove/<dish_id>", methods=["GET"])
 def remove_dish(dish_id):
-    dish = MenuDish.query.filter_by(id=dish_id)
+    dish = MenuDish.query.filter_by(id=dish_id).first()
     os.remove(os.path.join("app/", dish.thumbnail))
     db.session.delete(dish)
     db.session.commit()

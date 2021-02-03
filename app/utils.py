@@ -1,3 +1,5 @@
+import os
+from werkzeug.utils import secure_filename
 
 def handle_cart(cart, dish_db):
     products = []
@@ -12,3 +14,9 @@ def handle_cart(cart, dish_db):
         preparation_time = 0
 
     return products, total_price, preparation_time
+
+def handle_image(image, filename, path):
+    name = secure_filename('.'.join([filename, image.filename.split(".")[1]]))
+    path = os.path.join(path, name)
+    image.save(path)
+    return path[4:]
