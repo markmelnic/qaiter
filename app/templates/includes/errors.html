@@ -1,9 +1,7 @@
-{% with messages = get_flashed_messages(category_filter=["login_error"]) %}
-    {% if messages %}
-        <ul class="error">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="error">{{ message }}</div>
+{% endfor %}
+{% endif %}
 {% endwith %}
