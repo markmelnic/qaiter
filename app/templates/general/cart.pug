@@ -12,5 +12,6 @@ else
     h2 APROX PREP TIME = {{preparation_time}} minutes
 
     form(method="POST" action="{{ url_for('order') }}")
+        {{ order_form.csrf_token }}
         {{ order_form.notes}}
         {{ order_form.order }}

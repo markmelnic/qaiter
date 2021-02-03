@@ -4,6 +4,10 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Integ
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User, Tables, MenuCategory
 
+class OrderForm(FlaskForm):
+    notes = StringField("Notes")
+    order = SubmitField("Order")
+
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(max=50)])
     password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
@@ -17,19 +21,15 @@ class AddTable(FlaskForm):
     add = SubmitField("Add")
 
 class AddCategory(FlaskForm):
-    name = StringField("Category name", validators=[Length(max=50)])
+    name = StringField("Category name", validators=[DataRequired(), Length(min=1, max=50),])
+    thumbnail = FileField("Thumbnail", validators=[FileAllowed(["jpg", "png"], "Only .png & .jpg allowed"),])
     add = SubmitField("Create")
 
-class OrderForm(FlaskForm):
-    notes = StringField("Notes")
-    order = SubmitField("Order")
-
 class AddDish(FlaskForm):
-    # categories option are left out to be dynamically generated within the template
-    categories = SelectField("Categories", validators = [DataRequired()])
-    price = IntegerField("Price", validators=[DataRequired(), Length(max=3)])
-    preparation_time = IntegerField("Preparation Time", validators=[Length(max=3)])
-    title = StringField("Dish title", validators=[DataRequired(), Length(max=50)])
-    description = StringField("Dish title", validators=[Length(max=200)])
-    thumbnail = FileField("Thumbnail", validators=[FileRequired(), FileAllowed(["jpg", "png"], "Only .png & .jpg allowed")])
+    categories = SelectField("Categories", choices=[], validators=[DataRequired()])
+    price = IntegerField("Price", validators=[DataRequired()])
+    preparation_time = IntegerField("Preparation Time")
+    title = StringField("Dish title", validators=[DataRequired(), Length(min=1, max=60)])
+    description = StringField("Dish title", validators=[Length(min=1, max=240)])
+    thumbnail = FileField("Thumbnail", validators=[FileAllowed(["jpg", "png"])])
     add = SubmitField("Create")

@@ -13,6 +13,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["QRS_FOLDER"] = "static/img/qrcodes/"
 app.config["DSHES_FOLDER"] = "app/static/img/dishes/"
+app.config["CATGS_FOLDER"] = "app/static/img/categories/"
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 

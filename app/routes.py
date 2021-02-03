@@ -130,7 +130,11 @@ def logout():
 @login_required
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    return render_template("dashboard/layout.pug", title="Dashboard")
+    orders = {}
+    orders['placed_orders'] = len(Orders.query.filter_by(status=OrderStatuses.placed).all())
+    orders['active_orders'] = len(Orders.query.filter_by(status=OrderStatuses.active).all())
+
+    return render_template("dashboard/dashboard.pug", title="Dashboard", orders=orders)
 
 @login_required
 @app.route("/orders", methods=["GET"])
@@ -233,41 +237,60 @@ def qrview(table_number):
 @login_required
 @app.route("/menu", methods=["GET"])
 def menu():
+    dish_form = AddDish()
+    dish_form.categories.choices = [(c.id, c.name) for c in MenuCategory.query.all()]
     categories = MenuCategory.query.all()
     dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
-    return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=AddDish(), dishes=dishes)
+    return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=dish_form, dishes=dishes)
 
 @login_required
 @app.route("/add_category", methods=["POST"])
 def add_category():
-    category_form = AddCategory()
+    category_form = AddCategory(CombinedMultiDict((request.files, request.form)))
+    print(category_form.validate_on_submit())
 
     if MenuCategory.query.filter_by(name=category_form.name.data).first():
         flash(u"Category already exists", "exists_error")
-    else:
-        category = MenuCategory(name=category_form.name.data)
+    elif category_form.validate_on_submit():
+        # handle photo
+        thumbnail = category_form.thumbnail.data
+        thumb_name = secure_filename('.'.join([category_form.name.data, thumbnail.filename.split(".")[1]]))
+        thumb_path = os.path.join(app.config['CATGS_FOLDER'], thumb_name)
+        thumbnail.save(thumb_path)
+
+        category = MenuCategory(
+            name=category_form.name.data,
+            thumbnail = thumb_path[4:]
+        )
         db.session.add(category)
         db.session.commit()
+    else:
+        flash(u"Category validation error", "validation_error")
+
     return redirect(url_for("menu"))
 
 @login_required
 @app.route("/category_remove/<category_id>", methods=["GET"])
 def remove_category(category_id):
-    for dish in MenuCategory.query.filter_by(id=category_id).first().dishes:
+    category = MenuCategory.query.filter_by(id=category_id).first()
+    for dish in category.dishes:
+        os.remove(os.path.join("app/", dish.thumbnail))
         db.session.delete(dish)
-    MenuCategory.query.filter_by(id=category_id).delete()
+    os.remove(os.path.join("app/", category.thumbnail))
+    db.session.delete(category)
     db.session.commit()
+
     return redirect(url_for("menu"))
 
 @login_required
 @app.route("/add_dish", methods=["POST"])
 def add_dish():
-    #dish_form = AddDish()
     dish_form = AddDish(CombinedMultiDict((request.files, request.form)))
+    dish_form.categories.choices = [(c.id, c.name) for c in MenuCategory.query.all()]
 
-    if MenuDish.query.filter_by(title=dish_form.title.data).first() and dish_form.validate_on_submit():
+    if MenuDish.query.filter_by(title=dish_form.title.data).first():
         flash(u"Dish already exists", "exists_error")
-    else:
+    elif dish_form.validate_on_submit():
         # handle photo
         thumbnail = dish_form.thumbnail.data
         thumb_name = secure_filename('.'.join([dish_form.title.data, thumbnail.filename.split(".")[1]]))
@@ -275,7 +298,7 @@ def add_dish():
         thumbnail.save(thumb_path)
 
         dish = MenuDish(
-            category = MenuCategory.query.filter_by(name=dish_form.categories.data).first().id,
+            category = dish_form.categories.data,
             title = dish_form.title.data,
             description = dish_form.description.data,
             price = dish_form.price.data,
@@ -284,11 +307,16 @@ def add_dish():
         )
         db.session.add(dish)
         db.session.commit()
+    else:
+        flash(u"Dish validation error", "validation_error")
+
     return redirect(url_for("menu"))
 
 @login_required
 @app.route("/dish_remove/<dish_id>", methods=["GET"])
 def remove_dish(dish_id):
-    MenuDish.query.filter_by(id=dish_id).delete()
+    dish = MenuDish.query.filter_by(id=dish_id)
+    os.remove(os.path.join("app/", dish.thumbnail))
+    db.session.delete(dish)
     db.session.commit()
     return redirect(url_for("menu"))

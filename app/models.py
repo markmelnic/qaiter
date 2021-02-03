@@ -37,6 +37,7 @@ class MenuCategory(db.Model):
     name = db.Column(db.String(50), nullable=False, unique=True)
     #subcategories = db.relationship('Subcategories', backref='MenuSubCategory', lazy=True)
     dishes = db.relationship('MenuDish', backref='menu_category', lazy=True)
+    thumbnail = db.Column(db.String)
 
     def __repr__(self):
         return f"{self.name}, {self.dishes}"

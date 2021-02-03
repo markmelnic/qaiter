@@ -2,17 +2,18 @@ extends dashboard/layout.pug
 
 block content
     h1 Create new category
-    form(method="POST" action="{{ url_for('add_category') }}")
+    form(method="POST" action="{{ url_for('add_category') }}" enctype="multipart/form-data")
+        {{ create_category.csrf_token }}
         {{ create_category.name(placeholder="Category name") }}
+        {{ create_category.thumbnail}}
         {{ create_category.add }}
 
     h1 Add new dish
     form(method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data")
-        select(id="categories" name="categories" placeholder="Categories" required="")
-            each category in categories
-                option(value="{{ category.name }}") {{ category.name }}
-        {{ dish_form.thumbnail}}
+        {{ dish_form.csrf_token }}
+        {{ dish_form.categories }}
         {{ dish_form.title(placeholder="Dish title") }}
+        {{ dish_form.thumbnail}}
         {{ dish_form.description(placeholder="Description") }}
         {{ dish_form.price(placeholder="Price") }}
         {{ dish_form.preparation_time(placeholder="Preparation Time") }}
@@ -26,17 +27,19 @@ block content
 
         each category, index in categories
             tr
-                td
-                    h2 {{ category.name }}
+                td {{ category.name }}
+                    img(src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
                     a(href="category_remove/{{ category.id }}") REMOVE
 
                 td
                     table(style='width:100%', border='1')
                         each dish in dishes[index]
                             tr
-                                td
-                                    p {{ dish.title }}
-                                    p {{ dish.price }} lei
-                                    p {{ dish.preparation_time }} minutes
-                                    p {{ dish.description }}
+                                h2
+                                    img(src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
+                                h2 {{ dish.title }}
+                                h2 {{ dish.price }} lei
+                                h2 {{ dish.preparation_time }} minutes
+                                h2 {{ dish.description }}
+                                h2
                                     a(href="dish_remove/{{ dish.id }}") REMOVE
