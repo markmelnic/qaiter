@@ -1,4 +1,4 @@
-import datetime
+import enum
 from app import db, login_manager
 from flask_login import UserMixin
 
@@ -47,13 +47,20 @@ class MenuDish(db.Model):
     preparation_time = db.Column(db.Integer)
     title = db.Column(db.String(50), nullable=False, unique=True)
     description = db.Column(db.String(200))
+    thumbnail = db.Column(db.String)
     category = db.Column(db.Integer, db.ForeignKey('menu_category.id'), nullable=False)
+
+class OrderStatuses(enum.Enum):
+    placed = "placed"
+    active = "active"
+    complete = "complete"
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.String, default=datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"))
+    created = db.Column(db.String, nullable=False)
     completed = db.Column(db.String)
-    status = db.Column(db.Boolean, nullable=False)
+    completed = db.Column(db.String)
+    status = db.Column(db.Enum(OrderStatuses), default=OrderStatuses.placed, nullable=False)
     table_number = db.Column(db.Integer, nullable=False)
     products = db.Column(db.String, nullable=False)
     total_price = db.Column(db.Integer, nullable=False)

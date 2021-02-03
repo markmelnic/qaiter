@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User, Tables, MenuCategory
@@ -26,4 +27,5 @@ class AddDish(FlaskForm):
     preparation_time = IntegerField("Preparation Time", validators=[Length(max=3)])
     title = StringField("Dish title", validators=[DataRequired(), Length(max=50)])
     description = StringField("Dish title", validators=[Length(max=200)])
+    thumbnail = FileField("Thumbnail", validators=[FileRequired(), FileAllowed(["jpg", "png"], "Only .png & .jpg allowed")])
     add = SubmitField("Create")

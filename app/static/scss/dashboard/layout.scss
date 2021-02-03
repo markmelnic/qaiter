@@ -28,10 +28,6 @@ body {
         }
     }
 
-    .button {
-        height: 2em;
-    }
-
     a {
         color: black;
         text-decoration: none;
@@ -123,6 +119,11 @@ body {
             height: 3em;
         }
 
+        .button {
+            height: 2em;
+            padding: .5em;
+        }
+
         table {
             margin-right: auto;
             margin-top: 1em; 
@@ -131,14 +132,19 @@ body {
             border-collapse: collapse;
             text-align: left;
 
+            caption {
+                font-size: 1.5em;
+                text-align: left;
+            }
+
             .right {
                 text-align: right;
             }
 
             tr {
-                height: 2em;
+                height: 1.5em;
 
-                &.tobord {
+                &.topbord {
                     border-top: .1em solid var(--background);
                 }
 

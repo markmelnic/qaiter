@@ -1,4 +1,4 @@
-extends dashboard/dashboard.pug
+extends dashboard/layout.pug
 
 block content
     h1 Create new category
@@ -7,10 +7,11 @@ block content
         {{ create_category.add }}
 
     h1 Add new dish
-    form(method="POST" action="{{ url_for('add_dish') }}")
+    form(method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data")
         select(id="categories" name="categories" placeholder="Categories" required="")
             each category in categories
                 option(value="{{ category.name }}") {{ category.name }}
+        {{ dish_form.thumbnail}}
         {{ dish_form.title(placeholder="Dish title") }}
         {{ dish_form.description(placeholder="Description") }}
         {{ dish_form.price(placeholder="Price") }}
@@ -19,20 +20,23 @@ block content
 
     h1 Existing categories
     table(style='width:100%', border='1')
+        tr
+            th Categories
+            th Items
+
         each category, index in categories
             tr
-                th
+                td
                     h2 {{ category.name }}
                     a(href="category_remove/{{ category.id }}") REMOVE
 
-                th
+                td
                     table(style='width:100%', border='1')
                         each dish in dishes[index]
                             tr
-                                th
-                                    h1 {{ dish.title }}
-                                    h2 {{ dish.price }} lei
-                                    h3 {{ dish.preparation_time }} minutes
-                                    h4 {{ dish.description }}
+                                td
+                                    p {{ dish.title }}
+                                    p {{ dish.price }} lei
+                                    p {{ dish.preparation_time }} minutes
+                                    p {{ dish.description }}
                                     a(href="dish_remove/{{ dish.id }}") REMOVE
-
