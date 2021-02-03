@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 *.db
-*.png
 envars.py
+app/static/img/categories
+app/static/img/dishes
+app/static/img/qrcodes
