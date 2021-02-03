@@ -7,7 +7,7 @@ block content
         table
             caption Placed Orders
             tr
-                th Created
+                th Placed
                 th TABLE
                 th QTY
                 th ITEMS
@@ -19,7 +19,7 @@ block content
                     if item == 0
                         - var span = products['placed_products'][index]|length
                         tr(class="topbord")
-                            td(rowspan=span) {{order.created}}
+                            td(rowspan=span) {{order.placed}}
                             td(rowspan=span) {{order.table_number}}
                             td {{qty}}
                             td {{prod}}
@@ -31,8 +31,8 @@ block content
                                     img(class="button" src="{{ url_for( 'static', filename='img/icons/cooking.png' ) }}")
                     else
                         tr
-                            td {{prod}}
                             td {{qty}}
+                            td {{prod}}
 
     if not orders['active_orders']
         h2 No Active Orders
@@ -40,7 +40,8 @@ block content
         table
             caption Active Orders
             tr
-                th Created
+                th Placed
+                th Activated
                 th TABLE
                 th QTY
                 th ITEMS
@@ -52,7 +53,8 @@ block content
                     if item == 0
                         - var span = products['active_products'][index]|length
                         tr(class="topbord")
-                            td(rowspan=span) {{order.created}}
+                            td(rowspan=span) {{order.placed}}
+                            td(rowspan=span) {{order.activated}}
                             td(rowspan=span) {{order.table_number}}
                             td {{qty}}
                             td {{prod}}
@@ -64,8 +66,8 @@ block content
                                     img(class="button" src="{{ url_for( 'static', filename='img/icons/check-mark.png' ) }}")
                     else
                         tr
-                            td {{prod}}
                             td {{qty}}
+                            td {{prod}}
 
     if not orders['completed_orders']
         h2 No Completed Orders
@@ -73,7 +75,8 @@ block content
         table
             caption Completed Orders
             tr
-                th Created
+                th Placed
+                th Activated
                 th Completed
                 th TABLE
                 th QTY
@@ -85,8 +88,9 @@ block content
                 each prod, qty, item in products['completed_products'][index]
                     if item == 0
                         - var span = products['completed_products'][index]|length
-                        tr(class="tobord")
-                            td(rowspan=span) {{order.created}}
+                        tr(class="topbord")
+                            td(rowspan=span) {{order.placed}}
+                            td(rowspan=span) {{order.activated}}
                             td(rowspan=span) {{order.completed}}
                             td(rowspan=span) {{order.table_number}}
                             td {{qty}}
@@ -96,5 +100,5 @@ block content
 
                     else
                         tr
-                            td {{prod}}
                             td {{qty}}
+                            td {{prod}}

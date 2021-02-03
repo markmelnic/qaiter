@@ -79,7 +79,7 @@ def order():
         products, total_price, preparation_time = handle_cart(CART, MenuDish)
         order = Orders(
             products = str(CART),
-            created = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
+            placed = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
             table_number = TABLE_NUMBER,
             total_price = total_price,
             preparation_time = preparation_time,

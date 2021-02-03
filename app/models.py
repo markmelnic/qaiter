@@ -57,8 +57,8 @@ class OrderStatuses(enum.Enum):
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.String, nullable=False)
-    completed = db.Column(db.String)
+    placed = db.Column(db.String, nullable=False)
+    activated = db.Column(db.String)
     completed = db.Column(db.String)
     status = db.Column(db.Enum(OrderStatuses), default=OrderStatuses.placed, nullable=False)
     table_number = db.Column(db.Integer, nullable=False)
