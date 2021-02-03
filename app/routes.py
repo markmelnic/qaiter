@@ -81,6 +81,7 @@ def order():
     db.session.add(order)
     db.session.commit()
 
+    CART = {}
     return render_template("general/order.pug", products=products, preparation_time=preparation_time, total_price=total_price)
 
 
@@ -92,7 +93,7 @@ def backdoor():
         return redirect(url_for("dashboard"))
     else:
         login_form = LoginForm()
-        return render_template("backdoor.pug", title="Login", login_form=login_form)
+        return render_template("dashboard/backdoor.pug", title="Login", login_form=login_form)
 
 @app.route("/login", methods=["POST"])
 def login():
