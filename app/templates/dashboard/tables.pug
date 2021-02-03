@@ -25,7 +25,7 @@ block content
                 td {{ table.seats }}
                 td {{ table.description }}
                 td
-                    a(href="qrview/{{ table.number }}")
+                    a(href="qrview/{{ table.number }}" target="_blank")
                         img(class="qr" src="{{ table.imgurl }}")
                 td 
                     a(href="qrdownload/{{ table.number }}") DOWNLOAD
