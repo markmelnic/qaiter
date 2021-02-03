@@ -1,7 +1,38 @@
 extends dashboard/layout.pug
 
 block content
-    if not active_orders
+    if not orders['placed_orders']
+        h2 No Placed Orders
+    else
+        table
+            caption Placed Orders
+            tr
+                th Created
+                th TABLE
+                th ITEMS
+                th(class="right") QTY
+                th(class="right") TOTAL
+
+            each order, index in orders['placed_orders']
+                each prod, qty, item in products['placed_products'][index]
+                    if item == 0
+                        - var span = products['placed_products'][index]|length
+                        tr(class="topbord")
+                            td(rowspan=span) {{order.created}}
+                            td(rowspan=span) {{order.table_number}}
+                            td {{prod}}
+                            td(class="right") {{qty}}
+                            td(rowspan=span class="right") {{order.total_price}} lei
+
+                            td(rowspan=span)
+                                a(href="activate_order/{{order.id}}")
+                                    img(class="button" src="{{ url_for( 'static', filename='img/icons/cooking.png' ) }}")
+                    else
+                        tr
+                            td {{prod}}
+                            td(class="right") {{qty}}
+
+    if not orders['active_orders']
         h2 No Active Orders
     else
         table
@@ -13,10 +44,10 @@ block content
                 th(class="right") QTY
                 th(class="right") TOTAL
 
-            each order, index in active_orders
-                each prod, qty, item in active_products[index]
+            each order, index in orders['active_orders']
+                each prod, qty, item in products['active_products'][index]
                     if item == 0
-                        - var span = active_products[index]|length
+                        - var span = products['active_products'][index]|length
                         tr(class="topbord")
                             td(rowspan=span) {{order.created}}
                             td(rowspan=span) {{order.table_number}}
@@ -26,13 +57,13 @@ block content
 
                             td(rowspan=span)
                                 a(href="complete_order/{{order.id}}")
-                                    img(class="button complete" src="{{ url_for( 'static', filename='img/icons/check-mark.png' ) }}")
+                                    img(class="button" src="{{ url_for( 'static', filename='img/icons/check-mark.png' ) }}")
                     else
                         tr
                             td {{prod}}
                             td(class="right") {{qty}}
 
-    if not completed_orders
+    if not orders['completed_orders']
         h2 No Completed Orders
     else
         table
@@ -45,10 +76,10 @@ block content
                 th(class="right") QTY
                 th(class="right") TOTAL
 
-            each order, index in completed_orders
-                each prod, qty, item in completed_products[index]
+            each order, index in orders['completed_orders']
+                each prod, qty, item in products['completed_products'][index]
                     if item == 0
-                        - var span = completed_products[index]|length
+                        - var span = products['completed_products'][index]|length
                         tr(class="tobord")
                             td(rowspan=span) {{order.created}}
                             td(rowspan=span) {{order.completed}}
