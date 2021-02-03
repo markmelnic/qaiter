@@ -11,8 +11,11 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import User, Tables, MenuCategory, MenuDish, Orders
+from app.models import User, Tables, MenuCategory, MenuDish, Orders, OrderStatuses
 from app.forms import LoginForm, AddTable, AddCategory, AddDish
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import CombinedMultiDict
+
 from flask_login import login_user, current_user, logout_user, login_required
 from app.utils import *
 
@@ -28,8 +31,7 @@ if not User.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.add(user)
     db.session.commit()
 
-TABLE_NUMBER = None
-CART = {}
+TABLE_NUMBER, CART = None, {}
 
 @app.route("/", methods=["GET"])
 def def_home():
@@ -70,11 +72,12 @@ def add_to_cart(dish_name):
 
 @app.route("/order", methods=["GET"])
 def order():
+    global CART
     products, total_price, preparation_time = handle_cart(CART, MenuDish)
     order = Orders(
         products = str(CART),
+        created = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
         table_number = TABLE_NUMBER,
-        status = True,
         total_price = total_price,
         preparation_time = preparation_time,
         )
@@ -124,24 +127,39 @@ def dashboard():
 @login_required
 @app.route("/orders", methods=["GET"])
 def orders():
-    completed_orders = Orders.query.filter_by(status=False).all()
-    completed_products = []
-    for order in completed_orders:
-        temp = eval(order.products)
-        completed_products.append([(t, temp[t]) for t in temp])
+    products, orders = {}, {}
+    products['placed_products'], products['active_products'], products['completed_products'] = [], [], []
 
-    active_orders = Orders.query.filter_by(status=True).all()
-    active_products = []
-    for order in active_orders:
+    orders['placed_orders'] = Orders.query.filter_by(status=OrderStatuses.placed).all()
+    for order in orders['placed_orders']:
         temp = eval(order.products)
-        active_products.append([(t, temp[t]) for t in temp])
-    return render_template("dashboard/orders.pug", title="Orders", active_orders=active_orders,  active_products=active_products, completed_orders=completed_orders, completed_products=completed_products)
+        products['placed_products'].append([(t, temp[t]) for t in temp])
+
+    orders['active_orders'] = Orders.query.filter_by(status=OrderStatuses.active).all()
+    for order in orders['active_orders']:
+        temp = eval(order.products)
+        products['active_products'].append([(t, temp[t]) for t in temp])
+
+    orders['completed_orders'] = Orders.query.filter_by(status=OrderStatuses.complete).all()
+    for order in orders['completed_orders']:
+        temp = eval(order.products)
+        products['completed_products'].append([(t, temp[t]) for t in temp])
+    return render_template("dashboard/orders.pug", title="Orders", orders=orders, products=products)
+
+@login_required
+@app.route("/activate_order/<order_id>", methods=["GET"])
+def activate_order(order_id):
+    order = Orders.query.filter_by(id=order_id).first()
+    order.status = OrderStatuses.active
+    order.activated = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
+    db.session.commit()
+    return redirect(url_for("orders"))
 
 @login_required
 @app.route("/complete_order/<order_id>", methods=["GET"])
 def complete_order(order_id):
     order = Orders.query.filter_by(id=order_id).first()
-    order.status = False
+    order.status = OrderStatuses.complete
     order.completed = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M")
     db.session.commit()
     return redirect(url_for("orders"))
@@ -166,7 +184,7 @@ def add_table():
     qrfile = 'table{}.png'.format(table_form.number.data)
     qrcode = pyqrcode.create(qrurl, error='Q', version=5, mode='binary')
     qrcode.png(qrfile, scale=10, module_color=[0, 0, 0, 128])
-    qrpath = 'app/' + app.config['UPLOAD_FOLDER'] + str(qrfile)
+    qrpath = 'app/' + app.config['QRS_FOLDER'] + str(qrfile)
     shutil.move(qrfile, qrpath)
 
     if Tables.query.filter_by(number=table_form.number.data).first():
@@ -195,13 +213,13 @@ def remove_table(table_number):
 @login_required
 @app.route('/qrdownload/<table_number>', methods=["GET"])
 def qrdownload(table_number):
-    uploads_dir = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    uploads_dir = os.path.join(app.root_path, app.config['QRS_FOLDER'])
     return send_file(uploads_dir+'table{}.png'.format(table_number), as_attachment=True)
 
 @login_required
 @app.route('/qrview/<table_number>', methods=["GET"])
 def qrview(table_number):
-    uploads_dir = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    uploads_dir = os.path.join(app.root_path, app.config['QRS_FOLDER'])
     return send_from_directory(directory=uploads_dir, filename='table{}.png'.format(table_number))
 
 @login_required
@@ -236,17 +254,25 @@ def remove_category(category_id):
 @login_required
 @app.route("/add_dish", methods=["POST"])
 def add_dish():
-    dish_form = AddDish()
+    #dish_form = AddDish()
+    dish_form = AddDish(CombinedMultiDict((request.files, request.form)))
 
-    if MenuDish.query.filter_by(title=dish_form.title.data).first():
+    if MenuDish.query.filter_by(title=dish_form.title.data).first() and dish_form.validate_on_submit():
         flash(u"Dish already exists", "exists_error")
     else:
+        # handle photo
+        thumbnail = dish_form.thumbnail.data
+        thumb_name = secure_filename('.'.join([dish_form.title.data, thumbnail.filename.split(".")[1]]))
+        thumb_path = os.path.join(app.config['DSHES_FOLDER'], thumb_name)
+        thumbnail.save(thumb_path)
+
         dish = MenuDish(
             category = MenuCategory.query.filter_by(name=dish_form.categories.data).first().id,
             title = dish_form.title.data,
             description = dish_form.description.data,
             price = dish_form.price.data,
             preparation_time = dish_form.preparation_time.data,
+            thumbnail = thumb_path[4:]
         )
         db.session.add(dish)
         db.session.commit()
