@@ -33,29 +33,31 @@ block content
         img(id="add-ingredient" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
         {{ dish_form.add }}
 
-    h1 Existing categories
-    table(style='width:100%', border='1')
+    h1 Menu
+    table(class="menu")
         tr
             th Categories
             th Items
 
         each category, index in categories
-            tr
-                td {{ category.name }}
+            tr(class="category")
+                td
                     img(src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
+                    h3 {{ category.name }}
                     a(href="category_remove/{{ category.id }}") REMOVE
 
                 td
-                    table(style='width:100%', border='1')
-                        each dish in dishes[index]
-                            tr
-                                h2
+                    table(class="menu")
+                        tr(class="items")
+                            each dish in dishes[index]
+                                td(class="item")
                                     img(src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
-                                h2 {{ dish.title }}
-                                h2 {{ dish.price }} lei
-                                h2 {{ dish.preparation_time }} minutes
-                                h2 {{ dish.description }}
-                                h2
-                                    a(href="dish_remove/{{ dish.id }}") REMOVE
+                                    p {{ dish.title }}
+                                    p Price: {{ dish.price }} lei
+                                    p Prep. Time: {{ dish.preparation_time }} minutes
+                                    p Description: {{ dish.description }}
+                                    p Ingredients: {{ dish.ingredients }}
+                                    p
+                                        a(href="dish_remove/{{ dish.id }}") REMOVE
 
     script(src="{{ url_for( 'static', filename='js/menu.js' ) }}")

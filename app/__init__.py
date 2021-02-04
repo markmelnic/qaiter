@@ -17,7 +17,7 @@ app.config["CATGS_FOLDER"] = "app/static/img/categories/"
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-sass.compile(dirname=('app/static/scss', 'app/static/css'), output_style='compressed')
+sass.compile(dirname=('app/static/scss', 'app/static/compiled_scss'), output_style='compressed')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

@@ -1,14 +1,14 @@
 !!! 5
 
 html(lang="en")
-    include dashboard/head.pug
+    include includes/dashboard/head.pug
 
     body
         div
-            include dashboard/header.pug
+            include includes/dashboard/header.pug
 
             div(class="content")
                 include includes/errors.html
                 block content
 
-            include dashboard/footer.pug
+            include includes/dashboard/footer.pug
