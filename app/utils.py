@@ -17,8 +17,6 @@ def handle_cart(cart, dish_db):
 
 def handle_image(image, filename, path):
     name = secure_filename('.'.join([filename, image.filename.split(".")[1]]))
-    path = os.path.join("app", path, name)
-    print(os.getcwd())
-    print(path)
+    path = os.path.join(path, name)
     image.save(path)
     return path[4:]

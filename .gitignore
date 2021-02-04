@@ -131,6 +131,10 @@ dmypy.json
 *.db
 envars.py
 app/static/css
-app/static/img/categories
-app/static/img/dishes
-app/static/img/qrcodes
+
+app/static/img/categories/*
+!app/static/img/categories/__init__
+app/static/img/dishes/*
+!app/static/img/dishes/__init__
+app/static/img/qrcodes/*
+!app/static/img/qrcodes/__init__

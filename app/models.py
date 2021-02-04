@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
 
     firstname = db.Column(db.String(30))
     surname = db.Column(db.String(30))
-    profile_picture = db.Column(db.String(20), nullable=False, default="default.jpeg")
+    profile_picture = db.Column(db.String, nullable=False, default="default.jpeg")
 
     def __repr__(self):
         return f"User({self.role} - {self.username}, {self.email} - {self.firstname} {self.surname})"
@@ -24,10 +24,10 @@ class Tables(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.Integer, nullable=False, unique=True)
     seats = db.Column(db.Integer, nullable=True)
-    description = db.Column(db.Integer, nullable=True)
-    path = db.Column(db.String(20), nullable=False)
-    url = db.Column(db.String(60), nullable=False)
-    imgurl = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String, nullable=True)
+    path = db.Column(db.String(120), nullable=False)
+    url = db.Column(db.String(120), nullable=False)
+    imgurl = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
         return f"({self.id}) Table {self.number} with {self.seats} seats"

@@ -198,7 +198,7 @@ def add_table():
     qrfile = 'table{}.png'.format(table_form.number.data)
     qrcode = pyqrcode.create(qrurl, error='Q', version=5, mode='binary')
     qrcode.png(qrfile, scale=10, module_color=[0, 0, 0, 128])
-    qrpath = 'app/' + app.config['QRS_FOLDER'] + str(qrfile)
+    qrpath = app.config['QRS_FOLDER'] + str(qrfile)
     shutil.move(qrfile, qrpath)
 
     if Tables.query.filter_by(number=table_form.number.data).first():
@@ -273,9 +273,9 @@ def add_category():
 def remove_category(category_id):
     category = MenuCategory.query.filter_by(id=category_id).first()
     for dish in category.dishes:
-        os.remove(os.path.join("app/", dish.thumbnail))
+        os.remove(os.path.join("app", dish.thumbnail))
         db.session.delete(dish)
-    os.remove(os.path.join("app/", category.thumbnail))
+    os.remove(os.path.join("app", category.thumbnail))
     db.session.delete(category)
     db.session.commit()
 
@@ -319,7 +319,7 @@ def add_dish():
 @app.route("/dish_remove/<dish_id>", methods=["GET"])
 def remove_dish(dish_id):
     dish = MenuDish.query.filter_by(id=dish_id).first()
-    os.remove(os.path.join("app/", dish.thumbnail))
+    os.remove(os.path.join("app", dish.thumbnail))
     db.session.delete(dish)
     db.session.commit()
     return redirect(url_for("menu"))

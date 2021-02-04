@@ -11,9 +11,9 @@ app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["QRS_FOLDER"] = "static/img/qrcodes/"
-app.config["DSHES_FOLDER"] = "static/img/dishes/"
-app.config["CATGS_FOLDER"] = "static/img/categories/"
+app.config["QRS_FOLDER"] = "app/static/img/qrcodes/"
+app.config["DSHES_FOLDER"] = "app/static/img/dishes/"
+app.config["CATGS_FOLDER"] = "app/static/img/categories/"
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
