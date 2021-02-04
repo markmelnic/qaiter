@@ -246,6 +246,7 @@ def menu():
 
     categories = MenuCategory.query.all()
     dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
+
     return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=dish_form, dishes=dishes, ingredients=ingredients)
 
 @login_required
@@ -302,7 +303,7 @@ def add_dish():
             category = dish_form.categories.data,
             title = dish_form.title.data,
             description = dish_form.description.data,
-            ingredients = dish_form.ingredients.data,
+            ingredients = dish_form.ingredients.data[:-1],
             price = dish_form.price.data,
             preparation_time = dish_form.preparation_time.data,
             thumbnail = handle_image(dish_form.thumbnail.data, dish_form.title.data, app.config['DSHES_FOLDER'])

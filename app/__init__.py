@@ -12,12 +12,12 @@ app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["QRS_FOLDER"] = "static/img/qrcodes/"
-app.config["DSHES_FOLDER"] = "app/static/img/dishes/"
-app.config["CATGS_FOLDER"] = "app/static/img/categories/"
+app.config["DSHES_FOLDER"] = "static/img/dishes/"
+app.config["CATGS_FOLDER"] = "static/img/categories/"
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-sass.compile(dirname=('app/static/scss', 'app/static/compiled_scss'), output_style='compressed')
+sass.compile(dirname=('app/static/scss', 'app/static/css'), output_style='compressed')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

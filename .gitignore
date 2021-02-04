@@ -130,6 +130,7 @@ dmypy.json
 
 *.db
 envars.py
+app/static/css
 app/static/img/categories
 app/static/img/dishes
 app/static/img/qrcodes
