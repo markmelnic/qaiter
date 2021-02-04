@@ -15,8 +15,22 @@ block content
         {{ dish_form.title(placeholder="Dish title") }}
         {{ dish_form.thumbnail}}
         {{ dish_form.description(placeholder="Description") }}
+        {{ dish_form.ingredients(style="visibility: hidden;") }}
         {{ dish_form.price(placeholder="Price") }}
         {{ dish_form.preparation_time(placeholder="Preparation Time") }}
+
+        ul(id="ingredients-list" value="") Ingredients
+        input(type="text" id="name-ingredient-input" name="name-ingredient-input" list="existing-ing")
+        datalist(id="existing-ing")
+            each ingredient in ingredients
+                option(id="{{ingredient[0]}}") {{ingredient[1]}}
+
+        input(type="text" id="qty-ingredient-input" name="qty-ingredient-input")
+        select(id="qty-type" name="qty-type" required="")
+            option(value="gr" selected="selected") grams
+            option(value="ml") milliliter
+
+        img(id="add-ingredient" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
         {{ dish_form.add }}
 
     h1 Existing categories
@@ -43,3 +57,5 @@ block content
                                 h2 {{ dish.description }}
                                 h2
                                     a(href="dish_remove/{{ dish.id }}") REMOVE
+
+    script(src="{{ url_for( 'static', filename='js/menu.js' ) }}")

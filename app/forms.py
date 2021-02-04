@@ -31,5 +31,6 @@ class AddDish(FlaskForm):
     preparation_time = IntegerField("Preparation Time")
     title = StringField("Dish title", validators=[DataRequired(), Length(min=1, max=60)])
     description = StringField("Dish title")
+    ingredients = StringField("Ingredients")
     thumbnail = FileField("Thumbnail", validators=[FileAllowed(["jpg", "png"])])
     add = SubmitField("Create")

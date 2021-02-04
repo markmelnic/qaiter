@@ -11,7 +11,7 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import User, Tables, MenuCategory, MenuDish, Orders, OrderStatuses
+from app.models import User, Tables, MenuCategory, MenuDish, Orders, OrderStatuses, Ingredients
 from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -241,9 +241,12 @@ def qrview(table_number):
 def menu():
     dish_form = AddDish()
     dish_form.categories.choices = [(c.id, c.name) for c in MenuCategory.query.all()]
+
+    ingredients = [(i.id, i.name) for i in Ingredients.query.all()]
+
     categories = MenuCategory.query.all()
     dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
-    return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=dish_form, dishes=dishes)
+    return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=dish_form, dishes=dishes, ingredients=ingredients)
 
 @login_required
 @app.route("/add_category", methods=["POST"])
@@ -286,10 +289,20 @@ def add_dish():
     if MenuDish.query.filter_by(title=dish_form.title.data).first():
         flash(u"Dish already exists", "exists_error")
     elif dish_form.validate_on_submit():
+        for ingredient in dish_form.ingredients.data.split("|")[:-1]:
+            name, qty, tpy = ingredient.split("-")
+            #name = name.replace(" ", "_")
+            if not Ingredients.query.filter_by(name=name).first():
+                ingr = Ingredients(
+                    name=name
+                )
+                db.session.add(ingr)
+
         dish = MenuDish(
             category = dish_form.categories.data,
             title = dish_form.title.data,
             description = dish_form.description.data,
+            ingredients = dish_form.ingredients.data,
             price = dish_form.price.data,
             preparation_time = dish_form.preparation_time.data,
             thumbnail = handle_image(dish_form.thumbnail.data, dish_form.title.data, app.config['DSHES_FOLDER'])
