@@ -1,33 +1,42 @@
 extends dashboard/layout.pug
 
 block content
-    h1 Add a table
-    form(method="POST" action="{{ url_for('add_table') }}")
-        {{ table_form.number(placeholder="Table Number (ID)") }}
-        {{ table_form.seats(placeholder="Number of seats (optional)") }}
-        {{ table_form.description(placeholder="Description (optional)") }}
-        {{ table_form.add }}
+    div
+        h2 Add a table
+        form(method="POST" action="{{ url_for('add_table') }}")
+            {{ table_form.number(placeholder="Table Number (ID)") }}
+            {{ table_form.seats(placeholder="Number of seats (optional)") }}
+            {{ table_form.description(placeholder="Description (optional)") }}
+            {{ table_form.add(class="button") }}
 
-    table
-        caption Tables
-        tr
-            //th URL
-            th Table Number
-            th Seats
-            th Description
-            th IMG
+    div
+        h2 Active Tables
+        table
+            tr
+                //th URL
+                th Table Number
+                th Seats
+                th Description
+                th QR Code
 
-        each table in tables
-            tr(class="topbord")
-                //td
-                //    a(href="{{ table.url }}") URL
-                td {{ table.number }}
-                td {{ table.seats }}
-                td {{ table.description }}
-                td
-                    a(href="qrview/{{ table.number }}" target="_blank")
-                        img(class="qr" src="{{ table.imgurl }}")
-                td 
-                    a(href="qrdownload/{{ table.number }}") DOWNLOAD
-                td 
-                    a(href="table_remove/{{ table.number }}") REMOVE
+            each table in tables
+                tr(class="separator top")
+                    //td
+                    //    a(href="{{ table.url }}") URL
+                    td {{ table.number }}
+                    td {{ table.seats }}
+                    td {{ table.description }}
+                    td
+                        a(href="qrview/{{ table.number }}" target="_blank")
+                            img(class="qr" src="{{ table.imgurl }}")
+                    td(class="action")
+                        a(href="qrtoggle/{{ table.number }}")
+                            img(src="{{ url_for( 'static', filename='img/icons/toggle.png' ) }}")
+
+                    td(class="action")
+                        a(href="qrdownload/{{ table.number }}")
+                            img(src="{{ url_for( 'static', filename='img/icons/download.png' ) }}")
+
+                    td(class="action negative")
+                        a(href="table_remove/{{ table.number }}")
+                            img(src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")

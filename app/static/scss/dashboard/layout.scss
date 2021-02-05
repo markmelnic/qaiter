@@ -2,13 +2,19 @@ $header: #FFFFFF;
 $content: #F5F6F8;
 $main_accent: #109CF1;
 $nav_text: #334D6E;
+$main_text: #323C47;
 $secondary_text: #90A0B7;
 $separator: #EBEFF2;
+$negative: #FB4E4E;
 
 $def_trans: all .3s ease;
 
 :root {
     font-family: 'Montserrat';
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 body {
@@ -20,6 +26,7 @@ body {
     margin: 0;
 
     h1 {
+        margin: 0px;
         font-size: 52px;
         font-weight: 300;
         line-height: 64px;
@@ -27,14 +34,16 @@ body {
     }
 
     h2 {
-        font-size: 14px;
+        margin: 0px;
+        font-size: 44px;
         font-weight: 500;
-        line-height: 52px;
+        line-height: 54px;
         letter-spacing: 0px;
     }
 
     h3 {
-        font-size: 52px;
+        margin: 0px;
+        font-size: 32px;
         font-weight: 600;
         line-height: 40px;
         letter-spacing: .1px;
@@ -46,21 +55,46 @@ body {
         font-weight: 500;
         line-height: 24px;
         letter-spacing: .1px;
+    }
 
-        &.sub {
+    .sub {
             font-size: 12px;
             font-weight: 600;
             line-height: 16px;
             letter-spacing: .2px;
             color: $secondary_text;
-        }
     }
 
     a {
-        font-size: 18px;
+        color: $nav_text;
+        font-size: 16px;
         font-weight: 600;
-        line-height: 22px;
+        line-height: 20px;
         letter-spacing: .2px;
+        text-decoration: none;
+        transition: $def_trans;
+
+        &:hover {
+            color: $main_accent;
+            transform: scale(1.05);
+        }
+    }
+
+    th {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 16px;
+        letter-spacing: .2px;
+        color: $secondary_text;
+        text-align: start;
+    }
+
+    td {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 20px;
+        letter-spacing: .2px;
+        color: $main_text;
     }
 
     .separator {
@@ -73,15 +107,21 @@ body {
         }
     }
 
+    .negative {
+        filter: invert(63%) sepia(61%) saturate(7116%) hue-rotate(334deg) brightness(103%) contrast(97%);
+    }
+
     header {
         height: 100%;
         width: 18%;
         background-color: $header;
         color: $nav_text;
+        box-shadow: 6px 0px 18px rgba(0, 0, 0, 0.06);
 
         .title {
+            margin: 1em;
             width: fit-content;
-            padding-left: 2em;
+            padding-left: 1em;
         }
 
         .user {
@@ -138,8 +178,96 @@ body {
     }
 
     .content {
+        overflow: hidden;
+        overflow-y: scroll;
+        margin: 0 .5em 0 .5em;
+        display: flex;
+        flex: 1 0 calc(50% - 1em);
+
         height: 100%;
         width: 82%;
         background-color: $content;
+
+        >* {
+            width: calc(50% - 2em);
+            height: fit-content;
+            margin: 1em .5em 1em .5em;
+            padding: 1em;
+            border-radius: .2em;
+            background-color: $header;
+            box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .button {
+            cursor: pointer;
+            padding: 0%;
+            height: 42px;
+            width: 160px;
+            color: $separator;
+            background-color: $main_accent;
+            border-radius: .2em;
+            box-shadow: 0px 4px 10px rgba(16, 156, 241, 0.24);
+
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 20px;
+            letter-spacing: .2px;
+            text-align: center;  
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+
+            input {
+                padding-top: 1em;
+                margin-bottom: 1em;
+                width: 300px;
+                border: none;
+                border-bottom: .1em solid $separator;
+                transition: $def_trans;
+
+                &:hover {
+                    transform: scale(1.05);
+                    border-bottom: .1em solid $secondary_text;
+                }
+
+                &:focus {
+                    outline: none;
+                    transform: scale(1.05);
+                    border-bottom: .1em solid $main_accent;
+                }
+            }
+        }
+
+        table {
+            border-collapse: collapse;
+
+            tr {
+                height: 48px;
+
+                &>* {
+                    padding: 0 1em 0 1em;
+                }
+
+                img {
+                    height: 2em;
+                }
+
+                th {
+                    text-align: start;
+                }
+
+                td {
+                    color: $main_text;
+
+                    &.action:hover {
+                        transition: $def_trans;
+                        transform: scale(1.2);
+                        filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                    }
+                }
+            }
+        }
     }
 }
