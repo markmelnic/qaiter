@@ -57,7 +57,19 @@ body {
         letter-spacing: .1px;
     }
 
+    img {
+        height: 2em;
+        cursor: pointer;
+
+        &.action:hover {
+            transition: $def_trans;
+            transform: scale(1.2);
+            filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+        }
+    }
+
     a {
+        cursor: pointer;
         color: $nav_text;
         font-size: 16px;
         font-weight: 600;
@@ -66,19 +78,9 @@ body {
         text-decoration: none;
         transition: $def_trans;
 
-        img {
-            height: 2em;
-        }
-
         &:hover {
             color: $main_accent;
             transform: scale(1.05);
-        }
-
-        &.action:hover {
-            transition: $def_trans;
-            transform: scale(1.2);
-            filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
         }
     }
 

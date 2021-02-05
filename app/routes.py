@@ -199,7 +199,7 @@ def add_table():
     return redirect(url_for("tables"))
 
 @login_required
-@app.route("/table_remove/<table_number>", methods=["GET"])
+@app.route("/table_remove/<table_number>", methods=["POST"])
 def remove_table(table_number):
     os.remove(Tables.query.filter_by(number=table_number).first().path)
     Tables.query.filter_by(number=table_number).delete()
@@ -212,7 +212,7 @@ def qrdownload(table_number):
     return send_file(Tables.query.filter_by(number=table_number).first().path[4:], as_attachment=True)
 
 @login_required
-@app.route('/qrview/<table_number>', methods=["GET"])
+@app.route('/qrview/<table_number>', methods=["POST"])
 def qrview(table_number):
     return send_from_directory(directory=app.config['QRS_FOLDER'][4:], filename='table{}.png'.format(table_number))
 

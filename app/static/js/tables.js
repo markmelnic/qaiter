@@ -1,20 +1,37 @@
-$( "tr.table" ).click(function(e) {
-    e.preventDefault();
-    console.log($(this).attr("value"));
-
+$( "tr.table" ).click(function() {
     if ($(this).hasClass("selected")) {
         $(this).removeClass("selected");
     }
     else {
-        $('table > tbody  > tr').each(function(index, tr) { 
+        $('table > tbody > tr').each(function(i, tr) { 
             $(tr).removeClass("selected");
         });
         $(this).addClass("selected");
     };
 });
 
-$('tr').click(function(e){
-    e.preventDefault();
-    $('tr').removeClass('highlight'); // removes all highlights from tr's
-    $(this).addClass('highlight'); // adds the highlight to this row
+$('.table.action').click(function() {
+    table = $('table > tbody > tr.selected');
+    table_value = $(table).attr("value")
+    if (typeof table_value === "undefined") {
+        console.log("NO ROW SELECTED")
+        $(".errors").append( "Select a row first!" );
+    }
+    else if ($(this).attr("act") == "ajx") {
+        $.ajax({
+            url: $(this).attr("href") + table_value,
+            data: {},
+            type: 'POST',
+            success: function(response) {
+                $(table).remove();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
+    else {
+        console.log("NAV")
+        window.location.replace($(this).attr("href") + table_value);
+    }
 });

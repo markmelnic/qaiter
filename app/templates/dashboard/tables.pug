@@ -31,16 +31,9 @@ block content
                             img(class="qr" src="{{ table.imgurl }}")
 
         div(class="group separator top")
-            a(class="action" href="qredit/")
-                img(src="{{ url_for( 'static', filename='img/icons/edit.png' ) }}")
-
-            a(class="action" href="qrtoggle/")
-                img(src="{{ url_for( 'static', filename='img/icons/toggle.png' ) }}")
-
-            a(class="action" href="qrdownload/")
-                img(src="{{ url_for( 'static', filename='img/icons/download.png' ) }}")
-
-            a(class="action negative" href="table_remove/")
-                img(src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")
+            img(class="table action edit" act="ajx" href="qredit/" src="{{ url_for( 'static', filename='img/icons/edit.png' ) }}")
+            img(class="table action toggle" act="ajx" href="qrtoggle/" src="{{ url_for( 'static', filename='img/icons/toggle.png' ) }}")
+            img(class="table action download" href="qrdownload/" src="{{ url_for( 'static', filename='img/icons/download.png' ) }}")
+            img(class="table action remove negative" act="ajx" href="table_remove/" src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")
 
     script(src="{{ url_for( 'static', filename='js/tables.js' ) }}")
