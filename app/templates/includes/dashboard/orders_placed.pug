@@ -1,0 +1,32 @@
+if not orders['placed_orders']
+    h2 No Placed Orders
+else
+    table
+        caption Placed Orders
+        tr
+            th Placed
+            th TABLE
+            th QTY
+            th ITEMS
+            th Notes
+            th(class="right") TOTAL
+
+        each order, index in orders['placed_orders']
+            each prod, qty, item in products['placed_products'][index]
+                if item == 0
+                    - var span = products['placed_products'][index]|length
+                    tr(class="topbord")
+                        td(rowspan=span) {{order.placed}}
+                        td(rowspan=span) {{order.table_number}}
+                        td {{qty}}
+                        td {{prod}}
+                        td {{ order.notes }}
+                        td(rowspan=span class="right") {{order.total_price}} lei
+
+                        td(rowspan=span)
+                            a(class="action" href="activate_order/{{order.id}}")
+                                img(src="{{ url_for( 'static', filename='img/icons/cooking.png' ) }}")
+                else
+                    tr
+                        td {{qty}}
+                        td {{prod}}

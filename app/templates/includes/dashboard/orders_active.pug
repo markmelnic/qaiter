@@ -1,0 +1,34 @@
+if not orders['active_orders']
+    h2 No Active Orders
+else
+    table
+        caption Active Orders
+        tr
+            th Placed
+            th Activated
+            th TABLE
+            th QTY
+            th ITEMS
+            th Notes
+            th(class="right") TOTAL
+
+        each order, index in orders['active_orders']
+            each prod, qty, item in products['active_products'][index]
+                if item == 0
+                    - var span = products['active_products'][index]|length
+                    tr(class="topbord")
+                        td(rowspan=span) {{order.placed}}
+                        td(rowspan=span) {{order.activated}}
+                        td(rowspan=span) {{order.table_number}}
+                        td {{qty}}
+                        td {{prod}}
+                        td {{ order.notes }}
+                        td(rowspan=span class="right") {{order.total_price}} lei
+
+                        td(rowspan=span)
+                            a(href="complete_order/{{order.id}}")
+                                img(src="{{ url_for( 'static', filename='img/icons/check-mark.png' ) }}")
+                else
+                    tr
+                        td {{qty}}
+                        td {{prod}}
