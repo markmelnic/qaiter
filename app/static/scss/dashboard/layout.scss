@@ -1,8 +1,9 @@
+$background: #606C38;
+$back_nav: #F0ECE2;
+$back_con: #FEFAE0;
+
 :root {
-    --background: #606C38;
-    --back_nav: #F0ECE2;
-    --back_con: #FEFAE0;
-    background: linear-gradient(296.82deg, var(--background) 0%, rgba(96, 108, 56, 0.899218) 53.82%, rgba(96, 108, 56, 0.69) 79.17%, rgba(96, 108, 56, 0.79) 99.99%);
+    background: linear-gradient(296.82deg, $background 0%, rgba(96, 108, 56, 0.899218) 53.82%, rgba(96, 108, 56, 0.69) 79.17%, rgba(96, 108, 56, 0.79) 99.99%);
 
     * {
         font-family: 'Montserrat', sans-serif;
@@ -37,7 +38,7 @@ body {
         z-index: 2;
         height: 90%;
         width: 300px;
-        background-color: var(--back_nav);
+        background-color: $back_nav;
         border-radius: 10px;
         box-shadow: 1px 4px 4px rgba(0, 0, 0, 0.25);
 
@@ -56,7 +57,7 @@ body {
                 display: flex;
                 flex-direction: row;
 
-                background: var(--back_nav);
+                background: $back_nav;
                 margin-right: 2em;
                 margin-bottom: 1em;
                 transition: background-color 0.3s ease-in-out;
@@ -79,7 +80,7 @@ body {
                     margin-bottom: auto;
                     float: left;
                     width: 90%;
-                    color: var(--background);
+                    color: $background;
                 }
 
                 &.act {
@@ -94,7 +95,7 @@ body {
                 }
 
                 &:hover {
-                    background-color: var(--back_con);
+                    background-color: $back_con;
                 }
             }
         }
@@ -104,7 +105,7 @@ body {
         z-index: 1;
         height: 80%;
         width: 950px;
-        background-color: var(--back_con);
+        background-color: $back_con;
         border-radius: 0 10px 10px 0;
         box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
         overflow: hidden;
@@ -113,6 +114,14 @@ body {
 
         &::-webkit-scrollbar {
             display: none;
+        }
+
+        a {
+            background-color: aqua;
+        }
+
+        img {
+            height: 3em;
         }
 
         .qr {
@@ -149,7 +158,7 @@ body {
                 height: 1.5em;
 
                 &.topbord {
-                    border-top: .1em solid var(--background);
+                    border-top: .1em solid $background;
                 }
 
                 th, td {
@@ -159,8 +168,35 @@ body {
 
                 th {
                     font-size: small;
-                    color: var(--background);
+                    color: $background;
                     text-transform: uppercase;
+                }
+            }
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+
+            .category {
+                display: flex;
+                flex-direction: row;
+
+                &.info {
+                    padding: .5em;
+                    width: 30%;
+                }
+
+                .items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 70%;
+
+                    .item {
+                        flex-basis: 45%;
+                        padding: .5em;
+                        border-left: .2em solid $background;
+                    }
                 }
             }
         }
