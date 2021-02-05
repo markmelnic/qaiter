@@ -228,14 +228,12 @@ def remove_table(table_number):
 @login_required
 @app.route('/qrdownload/<table_number>', methods=["GET"])
 def qrdownload(table_number):
-    uploads_dir = os.path.join(app.root_path, app.config['QRS_FOLDER'])
-    return send_file(uploads_dir+'table{}.png'.format(table_number), as_attachment=True)
+    return send_file(Tables.query.filter_by(number=table_number).first().path[4:], as_attachment=True)
 
 @login_required
 @app.route('/qrview/<table_number>', methods=["GET"])
 def qrview(table_number):
-    uploads_dir = os.path.join(app.root_path, app.config['QRS_FOLDER'])
-    return send_from_directory(directory=uploads_dir, filename='table{}.png'.format(table_number))
+    return send_from_directory(directory=app.config['QRS_FOLDER'][4:], filename='table{}.png'.format(table_number))
 
 @login_required
 @app.route("/menu", methods=["GET"])
