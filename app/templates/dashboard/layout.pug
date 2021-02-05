@@ -4,11 +4,8 @@ html(lang="en")
     include includes/dashboard/head.pug
 
     body
-        div
-            include includes/dashboard/header.pug
+        include includes/dashboard/header.pug
 
-            div(class="content")
-                include includes/errors.html
-                block content
-
-            include includes/dashboard/footer.pug
+        div(class="content")
+            include includes/errors.html
+            block content

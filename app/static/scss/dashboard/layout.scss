@@ -1,204 +1,145 @@
-$background: #606C38;
-$back_nav: #F0ECE2;
-$back_con: #FEFAE0;
+$header: #FFFFFF;
+$content: #F5F6F8;
+$main_accent: #109CF1;
+$nav_text: #334D6E;
+$secondary_text: #90A0B7;
+$separator: #EBEFF2;
+
+$def_trans: all .3s ease;
 
 :root {
-    background: linear-gradient(296.82deg, $background 0%, rgba(96, 108, 56, 0.899218) 53.82%, rgba(96, 108, 56, 0.69) 79.17%, rgba(96, 108, 56, 0.79) 99.99%);
-
-    * {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 500;
-    }
+    font-family: 'Montserrat';
 }
 
 body {
     height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: row;
     overflow: hidden;
+    margin: 0;
 
-    > div {
-        display: flex;
-        flex-direction: row;
-        margin-left: auto;
-        margin-right: auto;
+    h1 {
+        font-size: 52px;
+        font-weight: 300;
+        line-height: 64px;
+        letter-spacing: .2px;
+    }
 
-        > * {
-            margin-top: auto;
-            margin-bottom: auto;
+    h2 {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 52px;
+        letter-spacing: 0px;
+    }
+
+    h3 {
+        font-size: 52px;
+        font-weight: 600;
+        line-height: 40px;
+        letter-spacing: .1px;
+    }
+
+    p {
+        margin: 0px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        letter-spacing: .1px;
+
+        &.sub {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 16px;
+            letter-spacing: .2px;
+            color: $secondary_text;
         }
     }
 
     a {
-        color: black;
-        text-decoration: none;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 22px;
+        letter-spacing: .2px;
+    }
+
+    .separator {
+        &.top {
+            border-top: .1em solid $separator;
+        }
+
+        &.bottom {
+            border-bottom: .1em solid $separator;
+        }
     }
 
     header {
-        z-index: 2;
-        height: 90%;
-        width: 300px;
-        background-color: $back_nav;
-        border-radius: 10px;
-        box-shadow: 1px 4px 4px rgba(0, 0, 0, 0.25);
+        height: 100%;
+        width: 18%;
+        background-color: $header;
+        color: $nav_text;
 
-        h1 {
-            width: 100%;
-            text-align:center;
-            line-height: 100px;
+        .title {
+            width: fit-content;
+            padding-left: 2em;
+        }
+
+        .user {
+            display: flex;
+            flex-direction: row;
+            padding: 1em 0 1em 2em;
+            margin-left: auto;
+            margin-right: auto;
+
+            img {
+                margin-right: 1em;
+                height: 48px;
+                width: 48px;
+                border-radius: 100%;
+            }
+
+            .details {
+                margin-top: auto;
+                margin-bottom: auto;
+                color: $nav_text;
+            }
         }
 
         nav {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
+            padding: 1em 0 1em 0;
 
             a {
                 display: flex;
                 flex-direction: row;
-
-                background: $back_nav;
-                margin-right: 2em;
-                margin-bottom: 1em;
-                transition: background-color 0.3s ease-in-out;
-
-                img {
-                    height: 3em;
-                    margin-top: auto;
-                    margin-bottom: auto;
-                    padding-left: 2em;
-                    padding-right: 1em;
-                }
-
-                h2 {
-                    margin-top: auto;
-                    float: left;
-                    width: 90%;
-                }
-
-                h4 {
-                    margin-bottom: auto;
-                    float: left;
-                    width: 90%;
-                    color: $background;
-                }
-
-                &.act {
-                    mix-blend-mode: darken;
-                    box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.25), inset -4px -4px 8px 4px #F0F5F7;
-                    border-radius: 0px 10px 10px 0px;
-                }
-
-                &.inact {
-                    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
-                    border-radius: 0px 10px 10px 0px;
-                }
+                padding: 1em 0 1em 2em;
+                text-decoration: none;
+                color: $nav_text;
+                transition: $def_trans;
 
                 &:hover {
-                    background-color: $back_con;
+                    transform: scale(1.05);
+                }
+
+                &.selected {
+                    color: $main_accent;
+
+                    img {
+                        filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                    }
+                }
+
+                img {
+                    margin-right: 1em;
+                    height: 22px;
+                    filter: invert(91%) sepia(4%) saturate(1397%) hue-rotate(184deg) brightness(92%) contrast(91%);
                 }
             }
         }
     }
 
     .content {
-        z-index: 1;
-        height: 80%;
-        width: 950px;
-        background-color: $back_con;
-        border-radius: 0 10px 10px 0;
-        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
-        overflow: hidden;
-        overflow-y: scroll;
-        padding-left: 1em;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        a {
-            background-color: aqua;
-        }
-
-        img {
-            height: 3em;
-        }
-
-        .qr {
-            height: 3em;
-        }
-
-        .button {
-            height: 2em;
-            padding: .5em;
-        }
-
-        #add-ingredient {
-            height: 2em;
-        }
-
-        table {
-            margin-right: auto;
-            margin-top: 1em; 
-            margin-bottom: 2em; 
-            width: 90%;
-            border-collapse: collapse;
-            text-align: left;
-
-            caption {
-                font-size: 1.5em;
-                text-align: left;
-            }
-
-            .right {
-                text-align: right;
-            }
-
-            tr {
-                height: 1.5em;
-
-                &.topbord {
-                    border-top: .1em solid $background;
-                }
-
-                th, td {
-                    padding-left: .2em;
-                    padding-right: .2em;
-                }
-
-                th {
-                    font-size: small;
-                    color: $background;
-                    text-transform: uppercase;
-                }
-            }
-        }
-
-        .menu {
-            display: flex;
-            flex-direction: column;
-
-            .category {
-                display: flex;
-                flex-direction: row;
-
-                &.info {
-                    padding: .5em;
-                    width: 30%;
-                }
-
-                .items {
-                    display: flex;
-                    flex-wrap: wrap;
-                    width: 70%;
-
-                    .item {
-                        flex-basis: 45%;
-                        padding: .5em;
-                        border-left: .2em solid $background;
-                    }
-                }
-            }
-        }
+        height: 100%;
+        width: 82%;
+        background-color: $content;
     }
 }

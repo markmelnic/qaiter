@@ -22,7 +22,7 @@ block content
         ul(id="ingredients-list" value="") Ingredients
         input(type="text" id="name-ingredient-input" name="name-ingredient-input" list="existing-ing")
         datalist(id="existing-ing")
-            each ingredient in ingredients
+            each ingredient in indexed_ingredients
                 option(id="{{ingredient[0]}}") {{ingredient[1]}}
 
         input(type="text" id="qty-ingredient-input" name="qty-ingredient-input")
@@ -34,7 +34,7 @@ block content
         {{ dish_form.add }}
 
     div(class="menu")
-        each category, index in categories
+        each category in categories
             div(class="category")
                 div(class="info")
                     img(src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
@@ -42,7 +42,7 @@ block content
                     a(href="category_remove/{{ category.id }}") REMOVE
 
                 div(class="items")
-                    each dish in dishes[index]
+                    each dish in category.dishes
                         div(class="item")
                             img(src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
                             p {{ dish.title }}
