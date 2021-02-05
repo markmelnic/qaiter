@@ -133,32 +133,13 @@ def logout():
 @login_required
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    orders = {}
-    orders['placed_orders'] = len(Orders.query.filter_by(status=OrderStatuses.placed).all())
-    orders['active_orders'] = len(Orders.query.filter_by(status=OrderStatuses.active).all())
-
-    return render_template("dashboard/dashboard.pug", title="Dashboard", user=current_user, orders=orders)
+    products, orders = load_orders(Orders, OrderStatuses)
+    return render_template("dashboard/dashboard.pug", title="Dashboard", user=current_user, orders=orders, products=products)
 
 @login_required
 @app.route("/orders", methods=["GET"])
 def orders():
-    products, orders = {}, {}
-    products['placed_products'], products['active_products'], products['completed_products'] = [], [], []
-
-    orders['placed_orders'] = Orders.query.filter_by(status=OrderStatuses.placed).all()
-    for order in orders['placed_orders']:
-        temp = eval(order.products)
-        products['placed_products'].append([(t, temp[t]) for t in temp])
-
-    orders['active_orders'] = Orders.query.filter_by(status=OrderStatuses.active).all()
-    for order in orders['active_orders']:
-        temp = eval(order.products)
-        products['active_products'].append([(t, temp[t]) for t in temp])
-
-    orders['completed_orders'] = Orders.query.filter_by(status=OrderStatuses.complete).all()
-    for order in orders['completed_orders']:
-        temp = eval(order.products)
-        products['completed_products'].append([(t, temp[t]) for t in temp])
+    products, orders = load_orders(Orders, OrderStatuses)
     return render_template("dashboard/orders.pug", title="Orders", user=current_user, orders=orders, products=products)
 
 @login_required

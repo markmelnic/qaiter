@@ -20,3 +20,24 @@ def handle_image(image, filename, path):
     path = os.path.join(path, name)
     image.save(path)
     return path[4:]
+
+def load_orders(orders_db, order_statuses):
+    products, orders = {}, {}
+    products['placed_products'], products['active_products'], products['completed_products'] = [], [], []
+
+    orders['placed_orders'] = orders_db.query.filter_by(status=order_statuses.placed).all()
+    for order in orders['placed_orders']:
+        temp = eval(order.products)
+        products['placed_products'].append([(t, temp[t]) for t in temp])
+
+    orders['active_orders'] = orders_db.query.filter_by(status=order_statuses.active).all()
+    for order in orders['active_orders']:
+        temp = eval(order.products)
+        products['active_products'].append([(t, temp[t]) for t in temp])
+
+    orders['completed_orders'] = orders_db.query.filter_by(status=order_statuses.complete).all()
+    for order in orders['completed_orders']:
+        temp = eval(order.products)
+        products['completed_products'].append([(t, temp[t]) for t in temp])
+
+    return products, orders
