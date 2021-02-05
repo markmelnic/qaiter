@@ -20,7 +20,7 @@ block content
                 th QR Code
 
             each table in tables
-                tr(class="separator top")
+                tr(value="{{table.id}}" class="table separator top")
                     //td
                     //    a(href="{{ table.url }}") URL
                     td {{ table.number }}
@@ -29,14 +29,18 @@ block content
                     td
                         a(href="qrview/{{ table.number }}" target="_blank")
                             img(class="qr" src="{{ table.imgurl }}")
-                    td(class="action")
-                        a(href="qrtoggle/{{ table.number }}")
-                            img(src="{{ url_for( 'static', filename='img/icons/toggle.png' ) }}")
 
-                    td(class="action")
-                        a(href="qrdownload/{{ table.number }}")
-                            img(src="{{ url_for( 'static', filename='img/icons/download.png' ) }}")
+        div(class="group separator top")
+            a(class="action" href="qredit/")
+                img(src="{{ url_for( 'static', filename='img/icons/edit.png' ) }}")
 
-                    td(class="action negative")
-                        a(href="table_remove/{{ table.number }}")
-                            img(src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")
+            a(class="action" href="qrtoggle/")
+                img(src="{{ url_for( 'static', filename='img/icons/toggle.png' ) }}")
+
+            a(class="action" href="qrdownload/")
+                img(src="{{ url_for( 'static', filename='img/icons/download.png' ) }}")
+
+            a(class="action negative" href="table_remove/")
+                img(src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")
+
+    script(src="{{ url_for( 'static', filename='js/tables.js' ) }}")

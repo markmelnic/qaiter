@@ -1,4 +1,4 @@
-$( "#add-ingredient" ).on( "click", function() {
+$( "#add-ingredient" ).click(function() {
     var ingredient = $('#name-ingredient-input').val();
     var quantity = $('#qty-ingredient-input').val();
     var qty_type = $('#qty-type').val();
