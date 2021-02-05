@@ -11,7 +11,7 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import User, Tables, MenuCategory, MenuDish, Orders, OrderStatuses, Ingredients
+from app.models import Users, Tables, MenuCategory, MenuDish, Orders, OrderStatuses, Ingredients
 from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -21,9 +21,10 @@ from app.utils import *
 db.create_all()
 db.session.commit()
 
-if not User.query.filter_by(username=os.getenv('ADMIN_USER')).first():
-    user = User(
+if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
+    user = Users(
             username=os.getenv('ADMIN_USER'),
+            email=os.getenv('ADMIN_EMAIL'),
             role="admin",
             password=bcrypt.generate_password_hash(os.getenv('ADMIN_PASS')).decode("utf-8"),
         )
@@ -112,7 +113,7 @@ def backdoor():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user = User.query.filter_by(username=login_form.username.data).first()
+        user = Users.query.filter_by(username=login_form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, login_form.password.data):
             login_user(user, remember=login_form.remember.data)
             next_page = request.args.get("next")
@@ -136,7 +137,7 @@ def dashboard():
     orders['placed_orders'] = len(Orders.query.filter_by(status=OrderStatuses.placed).all())
     orders['active_orders'] = len(Orders.query.filter_by(status=OrderStatuses.active).all())
 
-    return render_template("dashboard/dashboard.pug", title="Dashboard", orders=orders)
+    return render_template("dashboard/dashboard.pug", title="Dashboard", user=current_user, orders=orders)
 
 @login_required
 @app.route("/orders", methods=["GET"])
@@ -158,7 +159,7 @@ def orders():
     for order in orders['completed_orders']:
         temp = eval(order.products)
         products['completed_products'].append([(t, temp[t]) for t in temp])
-    return render_template("dashboard/orders.pug", title="Orders", orders=orders, products=products)
+    return render_template("dashboard/orders.pug", title="Orders", user=current_user, orders=orders, products=products)
 
 @login_required
 @app.route("/activate_order/<order_id>", methods=["GET"])
@@ -181,12 +182,12 @@ def complete_order(order_id):
 @login_required
 @app.route("/tables", methods=["GET"])
 def tables():
-    return render_template("dashboard/tables.pug", title="Tables", tables=Tables.query.all(), table_form=AddTable())
+    return render_template("dashboard/tables.pug", title="Tables", user=current_user, tables=Tables.query.all(), table_form=AddTable())
 
 @login_required
 @app.route("/settings", methods=["GET"])
 def settings():
-    return render_template("dashboard/settings.pug", title="Settings", tables=Tables.query.all(), table_form=AddTable())
+    return render_template("dashboard/settings.pug", title="Settings", user=current_user, tables=Tables.query.all(), table_form=AddTable())
 
 @login_required
 @app.route("/add_table", methods=["POST"])
@@ -242,12 +243,12 @@ def menu():
     dish_form = AddDish()
     dish_form.categories.choices = [(c.id, c.name) for c in MenuCategory.query.all()]
 
-    ingredients = [(i.id, i.name) for i in Ingredients.query.all()]
+    indexed_ingredients = [(i.id, i.name) for i in Ingredients.query.all()]
 
     categories = MenuCategory.query.all()
     dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
 
-    return render_template("dashboard/menu.pug", title="Menu", create_category=AddCategory(), categories=categories, dish_form=dish_form, dishes=dishes, ingredients=ingredients)
+    return render_template("dashboard/menu.pug", title="Menu", user=current_user, create_category=AddCategory(), categories=categories, dish_form=dish_form, ingredients=indexed_ingredients)
 
 @login_required
 @app.route("/add_category", methods=["POST"])
