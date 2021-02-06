@@ -42,12 +42,12 @@ def def_home():
 
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):
-    if int(table_number) in [int(table.number) for table in Tables.query.all()]:
+    if int(table_number) in [int(table.number) for table in Tables.query.filter_by(status=True).all()]:
         global TABLE_NUMBER, CART
         TABLE_NUMBER = int(table_number)
         CART = {}
     else:
-        flash(u"Table not found", "table_error")
+        flash(u"Either table not found or disabled", "table_error")
     return redirect(url_for("def_home"))
 
 @app.route("/category/<category_name>", methods=["GET"])
@@ -163,7 +163,10 @@ def complete_order(order_id):
 @login_required
 @app.route("/tables", methods=["GET"])
 def tables():
-    return render_template("dashboard/tables.pug", title="Tables", user=current_user, tables=Tables.query.all(), table_form=AddTable())
+    tables = {}
+    tables['active_tables'] = Tables.query.filter_by(status=True).all()
+    tables['disabled_tables'] = Tables.query.filter_by(status=False).all()
+    return render_template("dashboard/tables.pug", title="Tables", user=current_user, tables=tables, table_form=AddTable())
 
 @login_required
 @app.route("/settings", methods=["GET"])
@@ -199,6 +202,22 @@ def add_table():
     return redirect(url_for("tables"))
 
 @login_required
+@app.route('/qrview/<table_number>', methods=["POST"])
+def qrview(table_number):
+    return send_from_directory(directory=app.config['QRS_FOLDER'][4:], filename='table{}.png'.format(table_number))
+
+@login_required
+@app.route("/qrtoggle/<table_number>", methods=["POST"])
+def qrtoggle(table_number):
+    table = Tables.query.filter_by(number=table_number).first()
+    if table.status:
+        table.status = False
+    else:
+        table.status = True
+    db.session.commit()
+    return redirect(url_for("tables"))
+
+@login_required
 @app.route("/table_remove/<table_number>", methods=["POST"])
 def remove_table(table_number):
     os.remove(Tables.query.filter_by(number=table_number).first().path)
@@ -210,11 +229,6 @@ def remove_table(table_number):
 @app.route('/qrdownload/<table_number>', methods=["GET"])
 def qrdownload(table_number):
     return send_file(Tables.query.filter_by(number=table_number).first().path[4:], as_attachment=True)
-
-@login_required
-@app.route('/qrview/<table_number>', methods=["POST"])
-def qrview(table_number):
-    return send_from_directory(directory=app.config['QRS_FOLDER'][4:], filename='table{}.png'.format(table_number))
 
 @login_required
 @app.route("/menu", methods=["GET"])

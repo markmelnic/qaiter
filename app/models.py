@@ -28,6 +28,7 @@ class Tables(db.Model):
     path = db.Column(db.String(120), nullable=False)
     url = db.Column(db.String(120), nullable=False)
     imgurl = db.Column(db.String(120), nullable=False)
+    status = db.Column(db.Boolean, nullable=False, default=True)
 
     def __repr__(self):
         return f"({self.id}) Table {self.number} with {self.seats} seats"

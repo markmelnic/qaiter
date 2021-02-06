@@ -1,4 +1,4 @@
-$( "tr.table" ).click(function() {
+$("table").on("click", "tr.table", function() { 
     if ($(this).hasClass("selected")) {
         $(this).removeClass("selected");
     }
@@ -11,19 +11,29 @@ $( "tr.table" ).click(function() {
 });
 
 $('.table.action').click(function() {
-    table = $('table > tbody > tr.selected');
-    table_value = $(table).attr("value")
-    if (typeof table_value === "undefined") {
-        console.log("NO ROW SELECTED")
-        $(".errors").append( "Select a row first!" );
+    row = $('table > tbody > tr.selected');
+    row_value = $(row).attr("value")
+    url = $(this).attr("href") + row_value
+    if (typeof row_value === "undefined") {
+        $(".errors").append("Select a row first!");
     }
     else if ($(this).attr("meth") == "post") {
         $.ajax({
-            url: $(this).attr("href") + table_value,
+            url: url,
             data: {},
             type: 'POST',
             success: function(response) {
-                $(table).remove();
+                table = row.closest("table");
+                $(row).remove();
+                if (url.includes("toggle")) {
+                    $(row).removeClass("selected");
+                    if ($(table).hasClass("active")) {
+                        $("table.disabled").append(row);
+                    }
+                    else if ($(table).hasClass("disabled")) {
+                        $("table.active").append(row);
+                    }
+                }
             },
             error: function(error) {
                 console.log(error);
@@ -31,7 +41,6 @@ $('.table.action').click(function() {
         });
     }
     else {
-        console.log("NAV")
-        window.location.replace($(this).attr("href") + table_value);
+        window.location.replace(url);
     }
 });

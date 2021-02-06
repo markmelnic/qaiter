@@ -11,27 +11,8 @@ block content
 
     div
         h2 Active Tables
-        table
-            tr
-                //th URL
-                th Table Number
-                th Seats
-                th Description
-                th QR Code
-
-            each table in tables
-                tr(value="{{table.number}}" class="table separator top")
-                    td {{ table.number }}
-                    td {{ table.seats }}
-                    td {{ table.description }}
-                    td
-                        a(href="qrview/{{ table.number }}" target="_blank")
-                            img(class="qr" src="{{ table.imgurl }}")
 
         div(class="dropdown")
-            button(class="dropbtn") Actions
-                img(src="{{ url_for( 'static', filename='img/icons/down-arrow.png' ) }}")
-
             div(class="dropdown-content")
                 div(class="table action" href="qredit/" meth="post")
                     img( src="{{ url_for( 'static', filename='img/icons/edit.png' ) }}")
@@ -45,5 +26,64 @@ block content
                 div(class="table action negative" href="table_remove/" meth="post")
                     img(src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")
                     | Remove
+
+            button(class="dropbtn") Actions
+                img(src="{{ url_for( 'static', filename='img/icons/down-arrow.png' ) }}")
+
+
+        table(class="active")
+            tr
+                //th URL
+                th Table Number
+                th Seats
+                th Description
+                th QR Code
+
+            each table in tables["active_tables"]
+                tr(value="{{table.number}}" class="table separator top")
+                    td {{ table.number }}
+                    td {{ table.seats }}
+                    td {{ table.description }}
+                    td
+                        a(href="qrview/{{ table.number }}" target="_blank")
+                            img(class="qr" src="{{ table.imgurl }}")
+
+    div
+        h2 Disabled Tables
+
+        div(class="dropdown")
+            div(class="dropdown-content")
+                div(class="table action" href="qredit/" meth="post")
+                    img( src="{{ url_for( 'static', filename='img/icons/edit.png' ) }}")
+                    | Edit
+                div(class="table action" href="qrtoggle/" meth="post")
+                    img( src="{{ url_for( 'static', filename='img/icons/toggle.png' ) }}")
+                    | Toggle
+                div(class="table action" href="qrdownload/")
+                    img(src="{{ url_for( 'static', filename='img/icons/download.png' ) }}")
+                    | Download
+                div(class="table action negative" href="table_remove/" meth="post")
+                    img(src="{{ url_for( 'static', filename='img/icons/trash.png' ) }}")
+                    | Remove
+
+            button(class="dropbtn") Actions
+                img(src="{{ url_for( 'static', filename='img/icons/down-arrow.png' ) }}")
+
+        table(class="disabled")
+            tr
+                //th URL
+                th Table Number
+                th Seats
+                th Description
+                th QR Code
+
+            each table in tables["disabled_tables"]
+                tr(value="{{table.number}}" class="table separator top")
+                    td {{ table.number }}
+                    td {{ table.seats }}
+                    td {{ table.description }}
+                    td
+                        a(href="qrview/{{ table.number }}" target="_blank")
+                            img(class="qr" src="{{ table.imgurl }}")
 
     script(src="{{ url_for( 'static', filename='js/tables.js' ) }}")

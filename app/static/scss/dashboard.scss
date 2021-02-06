@@ -1,6 +1,7 @@
 $header: #FFFFFF;
 $content: #F5F6F8;
 $main_accent: #109CF1;
+$faded_accent: #f6fbfe;
 $nav_text: #334D6E;
 $main_text: #323C47;
 $secondary_text: #90A0B7;
@@ -240,14 +241,6 @@ body {
             text-align: center;  
         }
 
-        .dropbtn {
-            color: white;
-            padding: 16px;
-            font-size: 16px;
-            border: none;
-        }
-
-        /* The container <div> - needed to position the dropdown content */
         .dropdown {
             margin-top: 1em;
             width: fit-content;
@@ -276,10 +269,12 @@ body {
                 }
             }
 
+            $dropbtn_height: 36px;
             .dropbtn {
                 cursor: pointer;
                 padding: .5em;
                 width: 200px;
+                height: $dropbtn_height;
                 border: .1em solid $separator;
                 box-sizing: border-box;
                 border-radius: .5em;
@@ -302,6 +297,7 @@ body {
             }
 
             .dropdown-content {
+                top: $dropbtn_height;
                 display: none;
                 position: absolute;
                 min-width: 160px;
@@ -309,6 +305,15 @@ body {
                 box-shadow: .2em .2em .2em rgba(0, 0, 0, 0.12),
                 -.2em -.2em .2em rgba(0, 0, 0, 0.12);
                 z-index: 1;
+
+                &:hover ~ .dropbtn {
+                        color: $main_accent;
+                        border: .1em solid $main_accent;
+    
+                        img {
+                            filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                        }
+                }
 
                 div {
                     padding: .5em 2em .5em .5em;
@@ -323,7 +328,7 @@ body {
 
                     &:hover {
                         color: $main_accent;
-                        background-color: rgba(14, 154, 241, 0.04);
+                        background-color: $faded_accent;
                         border: .1em solid $main_accent;
 
                         img {
@@ -357,6 +362,11 @@ body {
             display: flex;
             flex-direction: column;
 
+            img {
+                height: 3em;
+                width: 3em;
+            }
+
             input {
                 padding-top: 1em;
                 margin-bottom: 1em;
@@ -365,15 +375,71 @@ body {
                 border-bottom: .1em solid $separator;
                 transition: $def_trans;
 
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 18px;
+                letter-spacing: .1px;
+
+                &#ingredients {
+                    display: none;
+                }
+
                 &:hover {
                     transform: scale(1.05);
                     border-bottom: .1em solid $secondary_text;
+
+                    &::placeholder {
+                        color: $main_accent;
+                    }
                 }
 
                 &:focus {
                     outline: none;
                     transform: scale(1.05);
                     border-bottom: .1em solid $main_accent;
+                }
+            }
+
+            select {
+                cursor: pointer;
+                padding: .5em;
+                width: 200px;
+                border: .1em solid $separator;
+                box-sizing: border-box;
+                border-radius: .5em;
+                color: $main_text;
+                background-color: $header;
+                transition: $def_trans;
+
+                *, *::before, *::after {
+                    box-sizing: border-box;
+                }
+
+                &:focus {
+                    outline: none;
+                }
+
+                &:hover {
+                    color: $main_accent;
+                    border: .1em solid $main_accent;
+                }
+
+                option {
+                    cursor: pointer;
+                    padding: .5em 2em .5em .5em;
+                    color: $main_text;
+                    text-decoration: none;
+                    display: block;
+                    transition: $def_trans;
+                    background-color: $header;
+                    border-radius: .5em;
+                    border: .1em solid $header;
+
+                    &:hover, &:checked {
+                        color: $main_accent;
+                        background-color: $faded_accent;
+                        border: .1em solid $main_accent;
+                    }
                 }
             }
         }
@@ -387,7 +453,7 @@ body {
 
                 &.selected, &.table:hover {
                     transform: scale(1.05);
-                    background-color: rgba(14, 154, 241, 0.04);
+                    background-color: $faded_accent;
                     box-shadow: .2em .2em .1em rgba(0, 0, 0, 0.12);
                 }
 
