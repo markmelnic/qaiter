@@ -4,7 +4,7 @@ $main_accent: #109CF1;
 $nav_text: #334D6E;
 $main_text: #323C47;
 $secondary_text: #90A0B7;
-$separator: #EBEFF2;
+$separator: #DBDDE0;
 $negative: #FB4E4E;
 
 $def_trans: all .3s ease;
@@ -240,6 +240,119 @@ body {
             text-align: center;  
         }
 
+        .dropbtn {
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            margin-top: 1em;
+            width: fit-content;
+            height: fit-content;
+            position: relative;
+            display: inline-block;
+
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 18px;
+            letter-spacing: .1px;
+
+            &:hover .dropdown-content {
+                display: block;
+            }
+
+            img {
+                float: right;
+                padding-right: 1em;
+                margin: auto 0 auto 0;
+                height: 1em;
+                filter: invert(95%) sepia(4%) saturate(1462%) hue-rotate(191deg) brightness(105%) contrast(76%);
+
+                &:hover {
+                    filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                }
+            }
+
+            .dropbtn {
+                cursor: pointer;
+                padding: .5em;
+                width: 200px;
+                border: .1em solid $separator;
+                box-sizing: border-box;
+                border-radius: .5em;
+                color: $main_text;
+                background-color: $header;
+                transition: $def_trans;
+
+                &:focus {
+                    outline: none;
+                }
+
+                &:hover {
+                    color: $main_accent;
+                    border: .1em solid $main_accent;
+
+                    img {
+                        filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                    }
+                }
+            }
+
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                min-width: 160px;
+                border-radius: .5em;
+                box-shadow: .2em .2em .2em rgba(0, 0, 0, 0.12),
+                -.2em -.2em .2em rgba(0, 0, 0, 0.12);
+                z-index: 1;
+
+                div {
+                    padding: .5em 2em .5em .5em;
+                    color: $main_text;
+                    text-decoration: none;
+                    display: block;
+                    transition: $def_trans;
+                    background-color: $header;
+                    cursor: pointer;
+                    border-radius: .5em;
+                    border: .1em solid $header;
+
+                    &:hover {
+                        color: $main_accent;
+                        background-color: rgba(14, 154, 241, 0.04);
+                        border: .1em solid $main_accent;
+
+                        img {
+                            filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                        }
+                    }
+
+                    img {
+                        float: left;
+                        padding-right: 1em;
+                        filter: invert(17%) sepia(9%) saturate(1455%) hue-rotate(171deg) brightness(99%) contrast(82%);
+                    } 
+
+                    &.negative {
+                        filter: none;
+
+                        &:hover {
+                            color: $negative;
+                            border: .1em solid $negative;
+
+                            img {
+                                filter: invert(63%) sepia(61%) saturate(7116%) hue-rotate(334deg) brightness(103%) contrast(97%);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         form {
             display: flex;
             flex-direction: column;
@@ -274,7 +387,7 @@ body {
 
                 &.selected, &.table:hover {
                     transform: scale(1.05);
-                    background-color: $content;
+                    background-color: rgba(14, 154, 241, 0.04);
                     box-shadow: .2em .2em .1em rgba(0, 0, 0, 0.12);
                 }
 

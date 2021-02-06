@@ -17,7 +17,7 @@ $('.table.action').click(function() {
         console.log("NO ROW SELECTED")
         $(".errors").append( "Select a row first!" );
     }
-    else if ($(this).attr("act") == "ajx") {
+    else if ($(this).attr("meth") == "post") {
         $.ajax({
             url: $(this).attr("href") + table_value,
             data: {},
