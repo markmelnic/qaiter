@@ -239,9 +239,9 @@ def menu():
     indexed_ingredients = [(i.id, i.name) for i in Ingredients.query.all()]
 
     categories = MenuCategory.query.all()
-    dishes = [[dishes_ for dishes_ in MenuDish.query.filter_by(category=cat.id).all()] for cat in categories]
+    ingredients = get_all_ingredients(MenuCategory, MenuDish)
 
-    return render_template("dashboard/menu.pug", title="Menu", user=current_user, create_category=AddCategory(), categories=categories, dish_form=dish_form, ingredients=indexed_ingredients)
+    return render_template("dashboard/menu.pug", title="Menu", user=current_user, create_category=AddCategory(), dish_form=dish_form, categories=categories, ingredients=ingredients, indexed_ingredients=indexed_ingredients)
 
 @login_required
 @app.route("/add_category", methods=["POST"])
