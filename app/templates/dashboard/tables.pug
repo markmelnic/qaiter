@@ -2,7 +2,7 @@ extends dashboard/layout.pug
 
 block content
     div
-        h2 Add a table
+        h3 Add a table
         form(method="POST" action="{{ url_for('add_table') }}")
             {{ table_form.number(placeholder="Table Number (ID)") }}
             {{ table_form.seats(placeholder="Number of seats (optional)") }}
@@ -10,7 +10,7 @@ block content
             {{ table_form.add(class="button") }}
 
     div
-        h2 Active Tables
+        h3 Active Tables
 
         div(class="dropdown")
             div(class="dropdown-content")
@@ -30,7 +30,6 @@ block content
             button(class="dropbtn") Actions
                 img(src="{{ url_for( 'static', filename='img/icons/down-arrow.png' ) }}")
 
-
         table(class="active")
             tr
                 //th URL
@@ -42,14 +41,18 @@ block content
             each table in tables["active_tables"]
                 tr(value="{{table.number}}" class="table separator top")
                     td {{ table.number }}
-                    td {{ table.seats }}
+                    td
+                        if table.seats
+                            {{ table.seats }}
+                        else
+                            | N/A
                     td {{ table.description }}
                     td
                         a(href="qrview/{{ table.number }}" target="_blank")
                             img(class="qr" src="{{ table.imgurl }}")
 
     div
-        h2 Disabled Tables
+        h3 Disabled Tables
 
         div(class="dropdown")
             div(class="dropdown-content")
@@ -80,7 +83,12 @@ block content
             each table in tables["disabled_tables"]
                 tr(value="{{table.number}}" class="table separator top")
                     td {{ table.number }}
-                    td {{ table.seats }}
+                    td
+                        if table.seats
+                            {{ table.seats }}
+                        else
+                            | N/A
+
                     td {{ table.description }}
                     td
                         a(href="qrview/{{ table.number }}" target="_blank")
