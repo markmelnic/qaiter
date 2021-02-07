@@ -1,55 +1,66 @@
 extends dashboard/layout.pug
 
 block content
-    h1 Create new category
-    form(method="POST" action="{{ url_for('add_category') }}" enctype="multipart/form-data")
-        {{ create_category.csrf_token }}
-        {{ create_category.name(placeholder="Category name") }}
-        {{ create_category.thumbnail}}
-        {{ create_category.add }}
+    div
+        h1 Create new category
+        form(method="POST" action="{{ url_for('add_category') }}" enctype="multipart/form-data")
+            {{ create_category.csrf_token }}
+            {{ create_category.name(placeholder="Category name") }}
+            {{ create_category.thumbnail}}
+            {{ create_category.add(class="button") }}
 
-    h1 Add new dish
-    form(method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data")
-        {{ dish_form.csrf_token }}
-        {{ dish_form.categories }}
-        {{ dish_form.title(placeholder="Dish title") }}
-        {{ dish_form.thumbnail}}
-        {{ dish_form.description(placeholder="Description") }}
-        {{ dish_form.ingredients(style="visibility: hidden;") }}
-        {{ dish_form.price(placeholder="Price") }}
-        {{ dish_form.preparation_time(placeholder="Preparation Time") }}
+    div
+        h1 Add new dish
+        form(method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data")
+            {{ dish_form.csrf_token }}
+            {{ dish_form.categories }}
+            {{ dish_form.title(placeholder="Dish title") }}
+            {{ dish_form.thumbnail}}
+            {{ dish_form.description(placeholder="Description") }}
+            {{ dish_form.ingredients }}
+            {{ dish_form.price(placeholder="Price") }}
+            {{ dish_form.preparation_time(placeholder="Preparation Time") }}
 
-        ul(id="ingredients-list" value="") Ingredients
-        input(type="text" id="name-ingredient-input" name="name-ingredient-input" list="existing-ing")
-        datalist(id="existing-ing")
-            each ingredient in indexed_ingredients
-                option(id="{{ingredient[0]}}") {{ingredient[1]}}
+            ul(id="ingredients-list" value="") Ingredients
+            input(type="text" id="name-ingredient-input" name="name-ingredient-input" placeholder="Ingredient" list="existing-ing")
+            datalist(id="existing-ing")
+                each ingredient in indexed_ingredients
+                    option(id="{{ingredient[0]}}") {{ingredient[1]}}
 
-        input(type="text" id="qty-ingredient-input" name="qty-ingredient-input")
-        select(id="qty-type" name="qty-type" required="")
-            option(value="gr" selected="selected") grams
-            option(value="ml") milliliter
+            input(type="text" id="qty-ingredient-input" name="qty-ingredient-input" placeholder="Quantity")
+            select(id="qty-type" name="qty-type" required="")
+                option(value="gr" selected="selected") grams
+                option(value="ml") milliliter
 
-        img(id="add-ingredient" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
-        {{ dish_form.add }}
+            img(id="add-ingredient" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
+            {{ dish_form.add(class="button") }}
 
     div(class="menu")
         each category in categories
             div(class="category")
+                img(src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
                 div(class="info")
-                    img(src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
                     h3 {{ category.name }}
                     a(href="category_remove/{{ category.id }}") REMOVE
 
-                div(class="items")
-                    each dish in category.dishes
-                        div(class="item")
-                            img(src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
-                            p {{ dish.title }}
-                            p Price: {{ dish.price }} lei
-                            p Prep. Time: {{ dish.preparation_time }} minutes
-                            p Description: {{ dish.description }}
-                            p Ingredients: {{ dish.ingredients }}
-                            a(href="dish_remove/{{ dish.id }}") REMOVE
+            each dish in category.dishes
+                div(class="card")
+                    div
+                        img(class="thumbnail" src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
+                        div(class="details separator bottom")
+                            h3 {{ dish.title }}
+                            p {{ dish.description }}
+                    div(class="lineflex")
+                        div(class="imgdesc separator right")
+                            img(src="{{ url_for( 'static', filename='img/icons/price-tag.png' ) }}")
+                            h4 {{ dish.price }} MDL
+                        div(class="imgdesc")
+                            img(src="{{ url_for( 'static', filename='img/icons/cooking-time.png' ) }}")
+                            h4 {{ dish.preparation_time }} MIN
+                    div(class="imgdesc")
+                        img(src="{{ url_for( 'static', filename='img/icons/honey.png' ) }}")
+                        h4 Ingredients: {{ dish.ingredients }}
+
+                    a(href="dish_remove/{{ dish.id }}") REMOVE
 
     script(src="{{ url_for( 'static', filename='js/menu.js' ) }}")

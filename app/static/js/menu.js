@@ -11,3 +11,7 @@ $( "#add-ingredient" ).click(function() {
     $('#name-ingredient-input').val('');
     $('#qty-ingredient-input').val('');
 });
+
+$("input").keyup(function() {
+    $(this).attr('value', $(this).val());
+});

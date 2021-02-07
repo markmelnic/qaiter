@@ -202,7 +202,7 @@ def add_table():
     return redirect(url_for("tables"))
 
 @login_required
-@app.route('/qrview/<table_number>', methods=["POST"])
+@app.route('/qrview/<table_number>', methods=["GET"])
 def qrview(table_number):
     return send_from_directory(directory=app.config['QRS_FOLDER'][4:], filename='table{}.png'.format(table_number))
 

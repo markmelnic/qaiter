@@ -6,7 +6,10 @@ $nav_text: #334D6E;
 $main_text: #323C47;
 $secondary_text: #90A0B7;
 $separator: #DBDDE0;
-$negative: #FB4E4E;
+$negative: #F7685B;
+$yellow: #FFB946;
+$purple: #885AF8;
+$green: #2ED47A;
 
 $def_trans: all .3s ease;
 
@@ -48,6 +51,22 @@ body {
         font-weight: 600;
         line-height: 36px;
         letter-spacing: .1px;
+    }
+
+    h4 {
+        margin: 0px;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 28px;
+        letter-spacing: .2px;
+    }
+
+    h5 {
+        margin: 0px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 22px;
+        letter-spacing: .2px;
     }
 
     p {
@@ -130,6 +149,14 @@ body {
 
         &.bottom {
             border-bottom: .1em solid $separator;
+        }
+
+        &.left {
+            border-left: .1em solid $separator;
+        }
+
+        &.right {
+            border-right: .1em solid $separator;
         }
     }
 
@@ -241,6 +268,28 @@ body {
             text-align: center;  
         }
 
+        .imgdesc {
+            img {
+                padding-right: 1em;
+                height: 1.5em;
+            }
+        }
+
+        .lineflex {
+            display: flex;
+            flex-direction: row;
+
+            > * {
+                &:not(:last-child) {
+                    padding-right: .5em;
+                }
+
+                &:not(:first-child) {
+                    padding-left: .5em;
+                }
+            }
+        }
+
         .dropdown {
             margin-top: 1em;
             width: fit-content;
@@ -289,6 +338,7 @@ body {
                 &:hover {
                     color: $main_accent;
                     border: .1em solid $main_accent;
+                    transform: none;
 
                     img {
                         filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
@@ -307,12 +357,13 @@ body {
                 z-index: 1;
 
                 &:hover ~ .dropbtn {
-                        color: $main_accent;
-                        border: .1em solid $main_accent;
-    
-                        img {
-                            filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
-                        }
+                    color: $main_accent;
+                    border: .1em solid $main_accent;
+                    transform: none;
+
+                    img {
+                        filter: invert(51%) sepia(39%) saturate(4517%) hue-rotate(176deg) brightness(99%) contrast(91%);
+                    }
                 }
 
                 div {
@@ -472,6 +523,66 @@ body {
 
                 td {
                     color: $main_text;
+                }
+            }
+        }
+
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            overflow-y: scroll;
+            margin: 0 .5em 0 .5em;
+            display: flex;
+            flex-wrap: wrap;
+
+            >* {
+                width: fit-content;
+                flex: 0 0 auto;
+                margin: 1em .5em 1em .5em;
+                padding: 1em;
+                border-radius: .5em;
+            }
+
+            .category {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin: auto 0 auto 0;
+
+                img {
+                    height: 5em;
+                }
+
+                .info {
+                    display: flex;
+                    flex-direction: column;
+                    }
+            }
+
+            .card {
+                box-shadow: .2em .2em .2em rgba(0, 0, 0, 0.12),
+                -.2em -.2em .2em rgba(0, 0, 0, 0.12);
+
+                >* {
+                    &:not(:first-child) {
+                        padding-top: .5em;
+                    }
+                }
+
+                & div {
+                    display: flex;
+                    flex-direction: row;
+
+                    .thumbnail {
+                        padding-right: 1em;
+                        height: 5em;
+                    }
+
+                    &.details {
+                        display: flex;
+                        flex-direction: column;
+                    }
                 }
             }
         }
