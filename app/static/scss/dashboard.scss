@@ -45,7 +45,7 @@ body {
         letter-spacing: 0px;
     }
 
-    h3 {
+    h3, caption {
         margin: 0px;
         font-size: 28px;
         font-weight: 600;
@@ -53,15 +53,19 @@ body {
         letter-spacing: .1px;
     }
 
-    h4 {
+    h4, .min caption {
         margin: 0px;
         font-size: 22px;
         font-weight: 500;
         line-height: 28px;
         letter-spacing: .2px;
+
+        & img {
+            height: 22px;
+        }
     }
 
-    h5 {
+    h5, li {
         margin: 0px;
         font-size: 16px;
         font-weight: 600;
@@ -75,6 +79,17 @@ body {
         font-weight: 500;
         line-height: 24px;
         letter-spacing: .1px;
+    }
+
+    ul {
+        margin: 0%;
+        padding: 0%;
+
+        li {
+            padding-left: 1em;
+            list-style: none;
+            color: $secondary_text
+        }
     }
 
     img {
@@ -233,18 +248,18 @@ body {
     .content {
         overflow: hidden;
         overflow-y: scroll;
-        margin: 0 .5em 0 .5em;
+        padding: 1em;
         display: flex;
         flex-wrap: wrap;
 
-        height: 100%;
+        height: calc(100% - 2em);
         width: 82%;
         background-color: $content;
 
         >* {
             //flex: 0 0 calc(50% - 3em);
             flex: auto;
-            margin: 1em .5em 1em .5em;
+            margin: 1em;
             padding: 1em;
             border-radius: .2em;
             background-color: $header;
@@ -278,6 +293,7 @@ body {
         .lineflex {
             display: flex;
             flex-direction: row;
+            width: fit-content;
 
             > * {
                 &:not(:last-child) {
@@ -498,6 +514,18 @@ body {
         table {
             border-collapse: collapse;
 
+            &.min {
+                margin: .5em auto .5em auto;
+
+                tr {
+                    height: 22px;
+
+                    &>* {
+                        padding: 0 .2em 0 .2em;
+                    }
+                }
+            }
+
             tr {
                 height: 48px;
                 transition: $def_trans;
@@ -530,28 +558,35 @@ body {
         .menu {
             display: flex;
             flex-wrap: wrap;
-            overflow: hidden;
-            overflow-y: scroll;
-            margin: 0 .5em 0 .5em;
-            display: flex;
-            flex-wrap: wrap;
+            padding: 1em;
 
             >* {
-                width: fit-content;
-                flex: 0 0 auto;
-                margin: 1em .5em 1em .5em;
-                padding: 1em;
+                flex: 0 0 calc(33% - 2em);
+                margin: .5em;
+                padding: .5em;
                 border-radius: .5em;
+            }
+
+            img {
+                cursor: unset;
+            }
+
+            .thumbnail {
+                padding-right: 1em;
+                height: 5em;
+                width: 5em;
+                object-fit: cover;
             }
 
             .category {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                margin: auto 0 auto 0;
 
                 img {
                     height: 5em;
+                    width: 5em;
+                    object-fit: cover;
                 }
 
                 .info {
@@ -574,14 +609,14 @@ body {
                     display: flex;
                     flex-direction: row;
 
-                    .thumbnail {
-                        padding-right: 1em;
-                        height: 5em;
+                    &.price {
+                        margin: 0 auto 0 auto;
                     }
 
                     &.details {
                         display: flex;
                         flex-direction: column;
+                        word-break: normal;
                     }
                 }
             }

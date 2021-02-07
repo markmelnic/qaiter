@@ -35,32 +35,50 @@ block content
             img(id="add-ingredient" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
             {{ dish_form.add(class="button") }}
 
-    div(class="menu")
-        each category in categories
+    each category, ci in categories
+        div(class="menu")
             div(class="category")
-                img(src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
+                img(class="thumbnail" src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
                 div(class="info")
                     h3 {{ category.name }}
                     a(href="category_remove/{{ category.id }}") REMOVE
 
-            each dish in category.dishes
+            each dish, di in category.dishes
                 div(class="card")
                     div
                         img(class="thumbnail" src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
                         div(class="details separator bottom")
                             h3 {{ dish.title }}
                             p {{ dish.description }}
-                    div(class="lineflex")
+                    div(class="lineflex price")
                         div(class="imgdesc separator right")
                             img(src="{{ url_for( 'static', filename='img/icons/price-tag.png' ) }}")
                             h4 {{ dish.price }} MDL
                         div(class="imgdesc")
                             img(src="{{ url_for( 'static', filename='img/icons/cooking-time.png' ) }}")
                             h4 {{ dish.preparation_time }} MIN
-                    div(class="imgdesc")
-                        img(src="{{ url_for( 'static', filename='img/icons/honey.png' ) }}")
-                        h4 Ingredients: {{ dish.ingredients }}
 
-                    a(href="dish_remove/{{ dish.id }}") REMOVE
+                    unless not ingredients[ci][di][0][0]
+                        table(class="min separator top")
+                            caption
+                                img(src="{{ url_for( 'static', filename='img/icons/honey.png' ) }}")
+                                | Ingredients
+                            tr
+                                th(class="separator right") Ingredient
+                                th(class="separator right") Quantity
+                                th Unit
+
+                            each ingredient in ingredients[ci][di]
+                                tr
+                                    td(class="separator right") {{ingredient[0]}}
+                                    if ingredient[1]
+                                        td(class="separator right") {{ingredient[1]}}
+                                        td {{ingredient[2]}}
+                                    else
+                                        td -
+                                        td -
+
+                    div(class="lineflex")
+                        a(href="dish_remove/{{ dish.id }}") REMOVE
 
     script(src="{{ url_for( 'static', filename='js/menu.js' ) }}")
