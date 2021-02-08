@@ -44,3 +44,7 @@ def load_orders(orders_db, order_statuses):
 
 def get_all_ingredients(category_db, dish_db):
     return [[[[ing for ing in ing_list.split("-")] for ing_list in dishes_.ingredients.split("|")] for dishes_ in dish_db.query.filter_by(category=cat.id).all()] for cat in category_db.query.all()]
+
+def upload_image(*args):
+    #   WIP
+    return False
