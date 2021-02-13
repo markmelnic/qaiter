@@ -13,6 +13,6 @@ else
     form(action="{{ url_for('order') }}" method="post")
         {{ order_form.csrf_token }}
         {{ order_form.notes}}
-        span Amount is MDL {{ total_price / 100 }}
+        span Amount is MDL {{ total_price / 100 + total_price % 100 }}
 
         script(src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-label="Plateste Online" data-key="{{ stripe_key }}" data-description="A Flask Charge" data-amount="{{ stripe_price }}" data-locale="auto" data-currency="mdl")

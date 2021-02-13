@@ -10,7 +10,7 @@ else
             th QTY
             th ITEMS
             th Notes
-            th(class="right") TOTAL
+            //th(class="right") TOTAL
 
         each order, index in orders['active_orders']
             each prod, qty, item in products['active_products'][index]
@@ -23,7 +23,7 @@ else
                         td {{qty}}
                         td {{prod}}
                         td {{ order.notes }}
-                        td(rowspan=span class="right") {{order.total_price}} lei
+                        //td(rowspan=span class="right") {{order.total_price}} lei
 
                         td(rowspan=span)
                             a(href="complete_order/{{order.id}}")

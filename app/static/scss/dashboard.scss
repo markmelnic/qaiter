@@ -280,7 +280,11 @@ body {
             font-weight: 600;
             line-height: 20px;
             letter-spacing: .2px;
-            text-align: center;  
+            text-align: center; 
+            
+            &:hover {
+                box-shadow: .05em .05em .025em rgba(16, 156, 241, 0.24);
+            }
         }
 
         .imgdesc {
@@ -527,7 +531,7 @@ body {
             }
 
             tr {
-                height: 48px;
+                height: 36px;
                 transition: $def_trans;
 
                 &.selected, &.table:hover {
