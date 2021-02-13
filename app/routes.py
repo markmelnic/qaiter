@@ -1,4 +1,4 @@
-import os, shutil, pyqrcode, json, datetime
+import os, shutil, pyqrcode, json, datetime, stripe
 from flask import (
     request,
     render_template,
@@ -10,7 +10,7 @@ from flask import (
     send_from_directory,
     send_file,
 )
-from app import app, db, bcrypt
+from app import app, db, bcrypt, STRIPE_KEYS
 from app.models import Users, Tables, MenuCategory, MenuDish, Orders, OrderStatuses, Ingredients
 from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
 from werkzeug.datastructures import CombinedMultiDict
@@ -32,7 +32,6 @@ if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.commit()
 
 TABLE_NUMBER, CART = None, {}
-
 
 ### PUBLIC ROUTES ###
 
@@ -64,7 +63,7 @@ def dish(dish_name):
 def cart():
     order_form = OrderForm()
     products, total_price, preparation_time = handle_cart(CART, MenuDish)
-    return render_template("general/cart.pug", products=products, preparation_time=preparation_time, total_price=total_price, order_form=order_form)
+    return render_template("general/cart.pug", stripe_key=STRIPE_KEYS['publishable_key'], products=products, preparation_time=preparation_time, total_price=total_price, order_form=order_form)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
 def add_to_cart(dish_name):
@@ -80,6 +79,23 @@ def order():
         global CART
         order_form = OrderForm()
         products, total_price, preparation_time = handle_cart(CART, MenuDish)
+
+        customer = stripe.Customer.create(
+            email='customer@example.com',
+            source=request.form['stripeToken']
+        )
+        print("customer")
+        print(customer)
+
+        charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=total_price,
+            currency='mdl',
+            description='Flask Charge'
+        )
+        print("charge")
+        print(charge)
+
         order = Orders(
             products = str(CART),
             placed = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),

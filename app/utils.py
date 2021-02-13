@@ -13,7 +13,7 @@ def handle_cart(cart, dish_db):
         total_price = 0
         preparation_time = 0
 
-    return products, total_price, preparation_time
+    return products, int(total_price * 100), preparation_time
 
 def handle_image(image, filename, path):
     name = secure_filename('.'.join([filename, image.filename.split(".")[1]]))

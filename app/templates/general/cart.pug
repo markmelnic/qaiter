@@ -8,10 +8,11 @@ else
                 th
                     h4 {{ product[2] }}x {{ product[0] }} - {{ product[1] }}
 
-    h1 TOTAL = {{total_price}} lei
     h2 APROX PREP TIME = {{preparation_time}} minutes
 
-    form(method="POST" action="{{ url_for('order') }}")
+    form(action="{{ url_for('order') }}" method="post")
         {{ order_form.csrf_token }}
         {{ order_form.notes}}
-        {{ order_form.order }}
+        span Amount is MDL {{ total_price / 100 }}
+
+        script(src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-label="Plateste Online" data-key="{{ stripe_key }}" data-description="A Flask Charge" data-amount="{{ stripe_price }}" data-locale="auto" data-currency="mdl")
