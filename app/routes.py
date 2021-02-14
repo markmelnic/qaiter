@@ -11,7 +11,7 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt, STRIPE_KEYS
-from app.models import Users, Tables, MenuCategory, MenuDish, Orders, OrderStatuses, Ingredients
+from app.models import Users, Tables, MenuCategory, MenuDish, Customers, Orders, OrderStatuses, Ingredients
 from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -62,8 +62,9 @@ def dish(dish_name):
 @app.route("/cart", methods=["GET"])
 def cart():
     order_form = OrderForm()
-    products, total_price, preparation_time = handle_cart(CART, MenuDish)
-    return render_template("general/cart.pug", stripe_key=STRIPE_KEYS['publishable_key'], products=products, preparation_time=preparation_time, total_price=total_price, order_form=order_form)
+    details = {}
+    details["products"], amount, details["preparation_time"] = handle_cart(CART, MenuDish)
+    return render_template("general/cart.pug", stripe_key=STRIPE_KEYS['publishable_key'], amount=amount, error=None, order_form=order_form, details=details)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
 def add_to_cart(dish_name):
@@ -78,41 +79,54 @@ def order():
     if request.method == 'POST':
         global CART
         order_form = OrderForm()
-        products, total_price, preparation_time = handle_cart(CART, MenuDish)
+        products, amount, preparation_time = handle_cart(CART, MenuDish)
 
         customer = stripe.Customer.create(
-            email='customer@example.com',
+            email=request.form['stripeEmail'],
             source=request.form['stripeToken']
         )
-        print("customer")
-        print(customer)
 
-        charge = stripe.Charge.create(
-            customer=customer.id,
-            amount=total_price,
-            currency='mdl',
-            description='Flask Charge'
-        )
-        print("charge")
-        print(charge)
-
-        order = Orders(
-            products = str(CART),
-            placed = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
-            table_number = TABLE_NUMBER,
-            total_price = total_price,
-            preparation_time = preparation_time,
-            notes = order_form.notes.data
+        client = Customers(
+            all_data = str(customer),
+            identifier = customer["id"],
+            created = customer["created"],
+            phone = customer["phone"],
+            name = customer["name"],
+            email = customer["email"],
             )
-        db.session.add(order)
+        db.session.add(client)
         db.session.commit()
-        CART = {}
+
+        try:
+            charge = stripe.Charge.create(
+                customer=customer.id,
+                amount=amount,
+                currency='mdl',
+                description='Flask Charge'
+            )
+
+            if charge["paid"]:
+                order = Orders(
+                    all_data=str(charge),
+                    placed = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"),
+                    products = str(CART),
+                    table_number = TABLE_NUMBER,
+                    preparation_time = preparation_time,
+                    notes = order_form.notes.data,
+                    amount = amount,
+                    )
+                db.session.add(order)
+                db.session.commit()
+                CART = {}
+        except stripe.error.CardError as e:
+            #flash(f"{e.message}", "card_error")
+            return redirect(url_for("cart"), error=e.message)
     else:
         products = []
         preparation_time = 0
-        total_price = 0
+        amount = 0
 
-    return render_template("general/order.pug", products=products, preparation_time=preparation_time, total_price=total_price)
+    return render_template("general/order.pug", products=products, preparation_time=preparation_time, amount=amount)
 
 
 ### DASHBOARD ROUTES ###
