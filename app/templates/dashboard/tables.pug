@@ -2,7 +2,7 @@ extends dashboard/layout.pug
 
 block content
     div
-        h3 Add a table
+        h3(class="form_title") Add a table
         form(method="POST" action="{{ url_for('add_table') }}")
             {{ table_form.number(placeholder="Table Number (ID)") }}
             {{ table_form.seats(placeholder="Number of seats (optional)") }}

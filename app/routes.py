@@ -34,13 +34,7 @@ if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
     db.session.commit()
 
 APP_SETTINGS = Settings.query.first()
-STRIPE_DATA = {
-    'secret_key': APP_SETTINGS.stripe_secret_key,
-    'publishable_key': APP_SETTINGS.stripe_publishable_key,
-    'currency': APP_SETTINGS.stripe_currency,
-    'description': APP_SETTINGS.stripe_transaction_description,
-}
-stripe.api_key = STRIPE_DATA['secret_key']
+stripe.api_key = APP_SETTINGS.stripe_secret_key
 
 TABLE_NUMBER, CART = None, {}
 
@@ -75,7 +69,7 @@ def cart():
     order_form = OrderForm()
     details = {}
     details["products"], amount, details["preparation_time"] = handle_cart(CART, MenuDish)
-    return render_template("general/cart.pug", stripe_data=STRIPE_DATA, amount=amount, error=None, order_form=order_form, details=details)
+    return render_template("general/cart.pug", app_settings=APP_SETTINGS, amount=amount, error=None, order_form=order_form, details=details)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
 def add_to_cart(dish_name):
@@ -118,8 +112,8 @@ def order():
             charge = stripe.Charge.create(
                 customer=customer.id,
                 amount=amount,
-                currency=STRIPE_DATA["currency"],
-                description=STRIPE_DATA["description"],
+                currency=APP_SETTINGS.stripe_currency,
+                description=APP_SETTINGS.stripe_transaction_description,
             )
             receipt = charge["receipt_url"]
 

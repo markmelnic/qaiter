@@ -2,7 +2,7 @@ extends dashboard/layout.pug
 
 block content
     div
-        h1 Create new category
+        h3(class="form_title") Create new category
         form(method="POST" action="{{ url_for('add_category') }}" enctype="multipart/form-data")
             {{ create_category.csrf_token }}
             {{ create_category.name(placeholder="Category name") }}
@@ -10,7 +10,7 @@ block content
             {{ create_category.add(class="button") }}
 
     div
-        h1 Add new dish
+        h3(class="form_title") Add new dish
         form(method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data")
             {{ dish_form.csrf_token }}
             {{ dish_form.categories }}
