@@ -12,7 +12,7 @@ from flask import (
 )
 from app import app, db, bcrypt
 from app.models import Settings, Users, Tables, MenuCategory, MenuDish, Customers, Orders, OrderStatuses, Ingredients
-from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
+from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm, UpdateSettings
 from werkzeug.datastructures import CombinedMultiDict
 
 from flask_login import login_user, current_user, logout_user, login_required
@@ -35,10 +35,10 @@ if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
 
 APP_SETTINGS = Settings.query.first()
 STRIPE_DATA = {
-    'secret_key': os.environ['STRIPE_SECRET_KEY'],
-    'publishable_key': os.environ['STRIPE_PUBLISHABLE_KEY'],
-    'currency': APP_SETTINGS.currency,
-    'description': APP_SETTINGS.transaction_description,
+    'secret_key': APP_SETTINGS.stripe_secret_key,
+    'publishable_key': APP_SETTINGS.stripe_publishable_key,
+    'currency': APP_SETTINGS.stripe_currency,
+    'description': APP_SETTINGS.stripe_transaction_description,
 }
 stripe.api_key = STRIPE_DATA['secret_key']
 
@@ -216,7 +216,19 @@ def tables():
 @login_required
 @app.route("/settings", methods=["GET"])
 def settings():
-    return render_template("dashboard/settings.pug", title="Settings", user=current_user, tables=Tables.query.all(), table_form=AddTable())
+    return render_template("dashboard/settings.pug", title="Settings", user=current_user, settings=Settings.query.first(), settings_from=UpdateSettings())
+
+@login_required
+@app.route("/update_settings", methods=["POST"])
+def update_settings():
+    settings_from = UpdateSettings()
+    APP_SETTINGS = Settings.query.first()
+    APP_SETTINGS.stripe_secret_key = settings_from.stripe_secret_key.data
+    APP_SETTINGS.stripe_publishable_key = settings_from.stripe_publishable_key.data
+    APP_SETTINGS.stripe_currency = settings_from.stripe_currency.data
+    APP_SETTINGS.stripe_transaction_description = settings_from.stripe_transaction_description.data
+    db.session.commit()
+    return redirect(url_for("settings"))
 
 @login_required
 @app.route("/add_table", methods=["POST"])

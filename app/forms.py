@@ -34,3 +34,10 @@ class AddDish(FlaskForm):
     ingredients = StringField("Ingredients")
     thumbnail = FileField("Thumbnail", validators=[FileAllowed(["jpg", "png"])])
     add = SubmitField("Add")
+
+class UpdateSettings(FlaskForm):
+    stripe_secret_key = StringField("Stripe Secret Key")
+    stripe_publishable_key = StringField("Stripe Publishable Key")
+    stripe_currency = StringField("Currency")
+    stripe_transaction_description = StringField("Transaction Description")
+    update = SubmitField("Update")

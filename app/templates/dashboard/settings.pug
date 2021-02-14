@@ -1,3 +1,15 @@
 extends dashboard/layout.pug
 
 block content
+    div
+        h3(class="form_title") Stripe Settings
+        form(method="POST" action="{{ url_for('update_settings') }}")
+            h5 Secret Key
+            input(id="stripe_secret_key" name="stripe_secret_key" value="{{ settings.stripe_secret_key }}" type="text")
+            h5 Publishable Key
+            input(id="stripe_publishable_key" name="stripe_publishable_key" value="{{ settings.stripe_publishable_key }}" type="text")
+            h5 Currency
+            input(id="stripe_currency" name="stripe_currency" value="{{ settings.stripe_currency }}" type="text")
+            h5 Transaction Description
+            input(id="stripe_transaction_description" name="stripe_transaction_description" value="{{ settings.stripe_transaction_description }}" type="text")
+            {{ settings_from.update(class="button") }}

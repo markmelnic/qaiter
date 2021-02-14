@@ -8,8 +8,10 @@ def get_user(user_id):
 
 class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    currency = db.Column(db.String, default="MDL")
-    transaction_description = db.Column(db.String, default="Flask Order")
+    stripe_secret_key = db.Column(db.String, default="")
+    stripe_publishable_key = db.Column(db.String, default="")
+    stripe_currency = db.Column(db.String, default="MDL")
+    stripe_transaction_description = db.Column(db.String, default="Flask Order")
 
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
