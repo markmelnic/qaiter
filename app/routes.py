@@ -10,8 +10,8 @@ from flask import (
     send_from_directory,
     send_file,
 )
-from app import app, db, bcrypt, STRIPE_KEYS
-from app.models import Users, Tables, MenuCategory, MenuDish, Customers, Orders, OrderStatuses, Ingredients
+from app import app, db, bcrypt
+from app.models import Settings, Users, Tables, MenuCategory, MenuDish, Customers, Orders, OrderStatuses, Ingredients
 from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm
 from werkzeug.datastructures import CombinedMultiDict
 
@@ -22,6 +22,8 @@ db.create_all()
 db.session.commit()
 
 if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
+    db.session.add(Settings())
+
     user = Users(
             username=os.getenv('ADMIN_USER'),
             email=os.getenv('ADMIN_EMAIL'),
@@ -30,6 +32,15 @@ if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
         )
     db.session.add(user)
     db.session.commit()
+
+APP_SETTINGS = Settings.query.first()
+STRIPE_DATA = {
+    'secret_key': os.environ['STRIPE_SECRET_KEY'],
+    'publishable_key': os.environ['STRIPE_PUBLISHABLE_KEY'],
+    'currency': APP_SETTINGS.currency,
+    'description': APP_SETTINGS.transaction_description,
+}
+stripe.api_key = STRIPE_DATA['secret_key']
 
 TABLE_NUMBER, CART = None, {}
 
@@ -46,7 +57,7 @@ def tab_home(table_number):
         TABLE_NUMBER = int(table_number)
         CART = {}
     else:
-        flash(u"Either table not found or disabled", "table_error")
+        flash(u"Either table is disabled or non-existent", "table_error")
     return redirect(url_for("def_home"))
 
 @app.route("/category/<category_name>", methods=["GET"])
@@ -64,7 +75,7 @@ def cart():
     order_form = OrderForm()
     details = {}
     details["products"], amount, details["preparation_time"] = handle_cart(CART, MenuDish)
-    return render_template("general/cart.pug", stripe_key=STRIPE_KEYS['publishable_key'], amount=amount, error=None, order_form=order_form, details=details)
+    return render_template("general/cart.pug", stripe_data=STRIPE_DATA, amount=amount, error=None, order_form=order_form, details=details)
 
 @app.route("/add_to_cart/<dish_name>", methods=["GET"])
 def add_to_cart(dish_name):
@@ -76,7 +87,13 @@ def add_to_cart(dish_name):
 
 @app.route("/order", methods=["GET", "POST"])
 def order():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        products = []
+        preparation_time = 0
+        amount = 0
+        receipt = None
+
+    elif request.method == 'POST':
         global CART
         order_form = OrderForm()
         products, amount, preparation_time = handle_cart(CART, MenuDish)
@@ -101,9 +118,10 @@ def order():
             charge = stripe.Charge.create(
                 customer=customer.id,
                 amount=amount,
-                currency='mdl',
-                description='Flask Charge'
+                currency=STRIPE_DATA["currency"],
+                description=STRIPE_DATA["description"],
             )
+            receipt = charge["receipt_url"]
 
             if charge["paid"]:
                 order = Orders(
@@ -114,6 +132,7 @@ def order():
                     preparation_time = preparation_time,
                     notes = order_form.notes.data,
                     amount = amount,
+                    receipt=receipt,
                     )
                 db.session.add(order)
                 db.session.commit()
@@ -121,12 +140,8 @@ def order():
         except stripe.error.CardError as e:
             #flash(f"{e.message}", "card_error")
             return redirect(url_for("cart"), error=e.message)
-    else:
-        products = []
-        preparation_time = 0
-        amount = 0
 
-    return render_template("general/order.pug", products=products, preparation_time=preparation_time, amount=amount)
+    return render_template("general/order.pug", products=products, preparation_time=preparation_time, amount=amount, receipt=receipt)
 
 
 ### DASHBOARD ROUTES ###

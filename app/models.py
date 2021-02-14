@@ -6,6 +6,11 @@ from flask_login import UserMixin
 def get_user(user_id):
     return Users.query.get(int(user_id))
 
+class Settings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    currency = db.Column(db.String, default="MDL")
+    transaction_description = db.Column(db.String, default="Flask Order")
+
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(db.String(30), nullable=False)
@@ -85,4 +90,4 @@ class Orders(db.Model):
     notes = db.Column(db.String)
     # payment details
     amount = db.Column(db.Integer, nullable=False)
-
+    receipt = db.Column(db.String, nullable=False)

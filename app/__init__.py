@@ -27,10 +27,4 @@ login_manager = LoginManager(app)
 login_manager.login_view = "backdoor"
 login_manager.login_message_category = "backdoor"
 
-STRIPE_KEYS = {
-    'secret_key': os.environ['STRIPE_SECRET_KEY'],
-    'publishable_key': os.environ['STRIPE_PUBLISHABLE_KEY']
-}
-stripe.api_key = STRIPE_KEYS['secret_key']
-
 from app import routes
