@@ -57,6 +57,15 @@ class Ingredients(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
 
+class Customers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    all_data = db.Column(db.String, nullable=False)
+    identifier = db.Column(db.String, nullable=False, unique=True)
+    created = db.Column(db.Integer, nullable=False)
+    phone = db.Column(db.String)
+    name = db.Column(db.String)
+    email = db.Column(db.String)
+
 class OrderStatuses(enum.Enum):
     placed = "placed"
     active = "active"
@@ -64,12 +73,16 @@ class OrderStatuses(enum.Enum):
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    all_data = db.Column(db.String, nullable=False)
+    # order details
     placed = db.Column(db.String, nullable=False)
     activated = db.Column(db.String)
     completed = db.Column(db.String)
     status = db.Column(db.Enum(OrderStatuses), default=OrderStatuses.placed, nullable=False)
     table_number = db.Column(db.Integer, nullable=False)
     products = db.Column(db.String, nullable=False)
-    total_price = db.Column(db.Integer, nullable=False)
     preparation_time = db.Column(db.Integer, nullable=False)
     notes = db.Column(db.String)
+    # payment details
+    amount = db.Column(db.Integer, nullable=False)
+
