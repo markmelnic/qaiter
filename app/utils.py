@@ -39,7 +39,7 @@ def load_orders(orders_db, order_statuses):
 def get_all_ingredients(category_db, dish_db):
     return [[[[ing for ing in ing_list.split("-")] for ing_list in dishes_.ingredients.split("|")] for dishes_ in dish_db.query.filter_by(category=cat.id).all()] for cat in category_db.query.all()]
 
-def upload_image(s3, filename, image=False):
+def upload_image(bucket, s3, filename, image=False):
     filename = secure_filename(filename)
     if not ".png" in filename:
         filename += ".png"
@@ -47,7 +47,7 @@ def upload_image(s3, filename, image=False):
         image.save(filename)
 
     s3.upload_file(
-        Bucket = os.environ["S3_BUCKET"],
+        Bucket = bucket,
         Filename=filename,
         Key=filename,
         ExtraArgs={
@@ -56,7 +56,7 @@ def upload_image(s3, filename, image=False):
     )
     os.remove(filename)
 
-    return filename, 'http://{}.s3.amazonaws.com/{}'.format(os.environ["S3_BUCKET"], filename)
+    return filename, 'http://{}.s3.amazonaws.com/{}'.format(bucket, filename)
 
-def delete_image(s3, filename):
-    s3.Object(os.environ["S3_BUCKET"], filename).delete()
+def delete_image(bucket, s3, filename):
+    s3.Object(bucket, filename).delete()

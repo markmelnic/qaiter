@@ -40,4 +40,9 @@ class UpdateSettings(FlaskForm):
     stripe_publishable_key = StringField("Stripe Publishable Key")
     stripe_currency = StringField("Currency")
     stripe_transaction_description = StringField("Transaction Description")
+
+    aws_s3_bucket = StringField("")
+    aws_s3_key_id = StringField("")
+    aws_s3_key_secret = StringField("")
+
     update = SubmitField("Update")

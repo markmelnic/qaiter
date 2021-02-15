@@ -11,8 +11,8 @@ from flask import (
     send_file,
 )
 from app import app, db, bcrypt
-from app.models import Settings, Users, Tables, MenuCategory, MenuDish, Customers, Orders, OrderStatuses, Ingredients
-from app.forms import LoginForm, AddTable, AddCategory, AddDish, OrderForm, UpdateSettings
+from app.models import *
+from app.forms import *
 from werkzeug.datastructures import CombinedMultiDict
 
 from flask_login import login_user, current_user, logout_user, login_required
@@ -38,13 +38,13 @@ stripe.api_key = APP_SETTINGS.stripe_secret_key
 
 S3_CLI = boto3.client(
     "s3",
-    aws_access_key_id=os.environ["AWS_S3_KEY_ID"],
-    aws_secret_access_key=os.environ["AWS_S3_KEY"]
+    aws_access_key_id=APP_SETTINGS.aws_s3_key_id,
+    aws_secret_access_key=APP_SETTINGS.aws_s3_key_secret
 )
 S3_RES = boto3.resource(
     "s3",
-    aws_access_key_id=os.environ["AWS_S3_KEY_ID"],
-    aws_secret_access_key=os.environ["AWS_S3_KEY"]
+    aws_access_key_id=APP_SETTINGS.aws_s3_key_id,
+    aws_secret_access_key=APP_SETTINGS.aws_s3_key_secret
 )
 
 TABLE_NUMBER, CART = None, {}
@@ -221,17 +221,22 @@ def tables():
 @login_required
 @app.route("/settings", methods=["GET"])
 def settings():
-    return render_template("dashboard/settings.pug", title="Settings", user=current_user, settings=Settings.query.first(), settings_from=UpdateSettings())
+    return render_template("dashboard/settings.pug", title="Settings", user=current_user, settings=Settings.query.first(), settings_form=UpdateSettings())
 
 @login_required
 @app.route("/update_settings", methods=["POST"])
 def update_settings():
-    settings_from = UpdateSettings()
     APP_SETTINGS = Settings.query.first()
-    APP_SETTINGS.stripe_secret_key = settings_from.stripe_secret_key.data
-    APP_SETTINGS.stripe_publishable_key = settings_from.stripe_publishable_key.data
-    APP_SETTINGS.stripe_currency = settings_from.stripe_currency.data
-    APP_SETTINGS.stripe_transaction_description = settings_from.stripe_transaction_description.data
+
+    settings = UpdateSettings()
+    APP_SETTINGS.stripe_secret_key = settings.stripe_secret_key.data
+    APP_SETTINGS.stripe_publishable_key = settings.stripe_publishable_key.data
+    APP_SETTINGS.stripe_currency = settings.stripe_currency.data
+    APP_SETTINGS.stripe_transaction_description = settings.stripe_transaction_description.data
+
+    APP_SETTINGS.aws_s3_bucket = settings.aws_s3_bucket.data
+    APP_SETTINGS.aws_s3_key_id = settings.aws_s3_key_id.data
+    APP_SETTINGS.aws_s3_key_secret = settings.aws_s3_key_secret.data
     db.session.commit()
     return redirect(url_for("settings"))
 
@@ -249,7 +254,7 @@ def add_table():
     if Tables.query.filter_by(number=table_form.number.data).first():
         flash(u"Table already exists", "exists_error")
     else:
-        qrfilename, qrurl = upload_image(S3_CLI, filename)
+        qrfilename, qrurl = upload_image(APP_SETTINGS, S3_CLI, filename)
         table = Tables(
             number=table_form.number.data,
             seats=table_form.seats.data,
@@ -282,7 +287,7 @@ def qrtoggle(table_number):
 @app.route("/table_remove/<table_number>", methods=["POST"])
 def remove_table(table_number):
     filename = Tables.query.filter_by(number=table_number).first().qrfilename
-    delete_image(S3_RES, filename)
+    delete_image(APP_SETTINGS.aws_s3_bucket, S3_RES, filename)
     Tables.query.filter_by(number=table_number).delete()
     db.session.commit()
     return redirect(url_for("tables"))
@@ -313,7 +318,7 @@ def add_category():
     if MenuCategory.query.filter_by(name=category_form.name.data).first():
         flash(u"Category already exists", "exists_error")
     elif category_form.validate_on_submit():
-        filename, thumbnail = upload_image(S3_CLI, category_form.name.data, image=category_form.thumbnail.data)
+        filename, thumbnail = upload_image(APP_SETTINGS.aws_s3_bucket, S3_CLI, category_form.name.data, image=category_form.thumbnail.data)
         category = MenuCategory(
             name=category_form.name.data,
             filename=filename,
@@ -331,9 +336,9 @@ def add_category():
 def remove_category(category_id):
     category = MenuCategory.query.filter_by(id=category_id).first()
     for dish in category.dishes:
-        delete_image(S3_RES, dish.filename)
+        delete_image(APP_SETTINGS.aws_s3_bucket, S3_RES, dish.filename)
         db.session.delete(dish)
-    delete_image(S3_RES, category.filename)
+    delete_image(APP_SETTINGS.aws_s3_bucket, S3_RES, category.filename)
     db.session.delete(category)
     db.session.commit()
 
@@ -357,7 +362,7 @@ def add_dish():
                 )
                 db.session.add(ingr)
 
-        filename, thumbnail = upload_image(S3_CLI, dish_form.title.data, image=dish_form.thumbnail.data)
+        filename, thumbnail = upload_image(APP_SETTINGS.aws_s3_bucket, S3_CLI, dish_form.title.data, image=dish_form.thumbnail.data)
         dish = MenuDish(
             category = dish_form.categories.data,
             title = dish_form.title.data,
@@ -379,7 +384,7 @@ def add_dish():
 @app.route("/dish_remove/<dish_id>", methods=["GET"])
 def remove_dish(dish_id):
     dish = MenuDish.query.filter_by(id=dish_id).first()
-    delete_image(S3_RES, dish.filename)
+    delete_image(APP_SETTINGS.aws_s3_bucket, S3_RES, dish.filename)
     db.session.delete(dish)
     db.session.commit()
     return redirect(url_for("menu"))
