@@ -7,7 +7,10 @@ header
     div(class="separator bottom")
 
     div(class="user")
-        img(src="{{ url_for( 'static', filename='img/users/' ) }}{{user.profile_picture}}")
+        if "default" in user.profile_picture:
+            img(src="{{ url_for( 'static', filename='img/icons/' ) }}{{ user.profile_picture }}")
+        else 
+            img(src="{{ user.profile_picture }}")
         div(class="details")
             p {{user.firstname}} {{user.surname}}
             p(class="sub") {{user.username}}
