@@ -1,5 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
+from app import APP_SETTINGS, S3_CLI, S3_RES
 
 def handle_cart(cart, dish_db):
     products = []
@@ -39,15 +40,15 @@ def load_orders(orders_db, order_statuses):
 def get_all_ingredients(category_db, dish_db):
     return [[[[ing for ing in ing_list.split("-")] for ing_list in dishes_.ingredients.split("|")] for dishes_ in dish_db.query.filter_by(category=cat.id).all()] for cat in category_db.query.all()]
 
-def upload_image(bucket, s3, filename, image=False):
+def upload_image(filename, image=False):
     filename = secure_filename(filename)
     if not ".png" in filename:
         filename += ".png"
     if image:
         image.save(filename)
 
-    s3.upload_file(
-        Bucket = bucket,
+    S3_CLI.upload_file(
+        Bucket = APP_SETTINGS.aws_s3_bucket,
         Filename=filename,
         Key=filename,
         ExtraArgs={
@@ -56,7 +57,7 @@ def upload_image(bucket, s3, filename, image=False):
     )
     os.remove(filename)
 
-    return filename, 'http://{}.s3.amazonaws.com/{}'.format(bucket, filename)
+    return filename, 'http://{}.s3.amazonaws.com/{}'.format(APP_SETTINGS.aws_s3_bucket, filename)
 
-def delete_image(bucket, s3, filename):
-    s3.Object(bucket, filename).delete()
+def delete_image(filename):
+    S3_RES.Object(APP_SETTINGS.aws_s3_bucket, filename).delete()
