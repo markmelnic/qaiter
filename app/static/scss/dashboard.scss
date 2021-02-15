@@ -211,6 +211,21 @@ body {
                 margin-bottom: auto;
                 color: $nav_text;
             }
+
+            .logout {
+                transition: $def_trans;
+                margin: auto 0 auto auto;
+
+                img {
+                    height: 2em;
+                    width: 2em;
+                    border-radius: 0%;
+
+                    &:hover {
+                        filter: invert(63%) sepia(61%) saturate(7116%) hue-rotate(334deg) brightness(103%) contrast(97%);
+                    }
+                }
+            }
         }
 
         nav {

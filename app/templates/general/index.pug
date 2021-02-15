@@ -1,6 +1,7 @@
 a(href="{{ url_for('backdoor') }}") LOGIN
 
 h1 PUBLIC MENU VIEW
+include includes/errors.html
 each category in categories
     br
     a(href="{{ url_for('def_home') }}category/{{ category.name }}") {{ category.name }}

@@ -1,5 +1,5 @@
 header
-    - var navs = [['dashboard', 'general overview', 'Dashboard', 'dashboard.png'], ['orders', 'view and manage orders', 'Orders', 'list.png'], ['tables', 'manage tables and view qr codes', 'Tables', 'qr.png'], ['menu', 'modify the menu or add options', 'Menu', 'menu.png'], ['settings', 'staff & technical options', 'Settings', 'settings.png']]
+    - var navs = [['dashboard', 'Dashboard', 'dashboard.png'], ['orders', 'Orders', 'list.png'], ['tables', 'Tables', 'qr.png'], ['menu', 'Menu', 'menu.png'], ['staff', 'Staff', 'staff.png'], ['settings', 'Settings', 'settings.png'], ['account', 'Account', 'account.png']]
 
     div(class="title")
         h1 el Cafe.
@@ -11,6 +11,8 @@ header
         div(class="details")
             p {{user.firstname}} {{user.surname}}
             p(class="sub") {{user.username}}
+        a(class="logout" href="{{ url_for('logout') }}")
+            img(src="{{ url_for( 'static', filename='img/icons/logout.png' ) }}")
 
     nav(class="separator top bottom")
         each nav in navs
@@ -20,7 +22,7 @@ header
                 - var status = ""
 
             a(href="{{nav[0]}}" class=status)
-                img(src="{{ url_for( 'static', filename='img/icons/' ) }}{{nav[3]}}")
-                {{nav[2]}}
+                img(src="{{ url_for( 'static', filename='img/icons/' ) }}{{nav[2]}}")
+                {{nav[1]}}
 
     include includes/dashboard/footer.pug
