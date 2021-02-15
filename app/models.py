@@ -32,9 +32,9 @@ class Tables(db.Model):
     number = db.Column(db.Integer, nullable=False, unique=True)
     seats = db.Column(db.Integer, nullable=True)
     description = db.Column(db.String, nullable=True)
-    path = db.Column(db.String(120), nullable=False)
     url = db.Column(db.String(120), nullable=False)
-    imgurl = db.Column(db.String(120), nullable=False)
+    qrfilename = db.Column(db.String, nullable=False)
+    qrurl = db.Column(db.String(120), nullable=False)
     status = db.Column(db.Boolean, nullable=False, default=True)
 
     def __repr__(self):
@@ -45,6 +45,7 @@ class MenuCategory(db.Model):
     name = db.Column(db.String(50), nullable=False, unique=True)
     #subcategories = db.relationship('Subcategories', backref='MenuSubCategory', lazy=True)
     dishes = db.relationship('MenuDish', backref='menu_category', lazy=True)
+    filename = db.Column(db.String)
     thumbnail = db.Column(db.String)
 
     def __repr__(self):
@@ -57,6 +58,8 @@ class MenuDish(db.Model):
     title = db.Column(db.String(50), nullable=False, unique=True)
     description = db.Column(db.String(200))
     ingredients = db.Column(db.String)
+
+    filename = db.Column(db.String)
     thumbnail = db.Column(db.String)
     category = db.Column(db.Integer, db.ForeignKey('menu_category.id'), nullable=False)
 

@@ -1,4 +1,4 @@
-import os, shutil, pyqrcode, json, datetime, stripe
+import os, shutil, pyqrcode, json, datetime, stripe, boto3
 from flask import (
     request,
     render_template,
@@ -35,6 +35,17 @@ if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
 
 APP_SETTINGS = Settings.query.first()
 stripe.api_key = APP_SETTINGS.stripe_secret_key
+
+S3_CLI = boto3.client(
+    "s3",
+    aws_access_key_id=os.environ["AWS_S3_KEY_ID"],
+    aws_secret_access_key=os.environ["AWS_S3_KEY"]
+)
+S3_RES = boto3.resource(
+    "s3",
+    aws_access_key_id=os.environ["AWS_S3_KEY_ID"],
+    aws_secret_access_key=os.environ["AWS_S3_KEY"]
+)
 
 TABLE_NUMBER, CART = None, {}
 
@@ -230,23 +241,22 @@ def add_table():
     table_form = AddTable()
 
     base_url = request.base_url.replace(url_for("add_table"), "")
-    qrurl = base_url + "/table/{}".format(table_form.number.data)
-    qrfile = 'table{}.png'.format(table_form.number.data)
-    qrcode = pyqrcode.create(qrurl, error='Q', version=5, mode='binary')
-    qrcode.png(qrfile, scale=10, module_color=[0, 0, 0, 128])
-    qrpath = app.config['QRS_FOLDER'] + str(qrfile)
-    shutil.move(qrfile, qrpath)
+    url = base_url + "/table/{}".format(table_form.number.data)
+    filename = 'table_qr_{}.png'.format(table_form.number.data)
+    qrcode = pyqrcode.create(url, error='Q', version=5, mode='binary')
+    qrcode.png(filename, scale=10, module_color=[0, 0, 0, 128])
 
     if Tables.query.filter_by(number=table_form.number.data).first():
         flash(u"Table already exists", "exists_error")
     else:
+        qrfilename, qrurl = upload_image(S3_CLI, filename)
         table = Tables(
             number=table_form.number.data,
             seats=table_form.seats.data,
             description=table_form.description.data,
-            path=qrpath,
-            url=qrurl,
-            imgurl=base_url + qrpath[3:],
+            url=url,
+            qrfilename=qrfilename,
+            qrurl=qrurl,
         )
         db.session.add(table)
         db.session.commit()
@@ -271,7 +281,8 @@ def qrtoggle(table_number):
 @login_required
 @app.route("/table_remove/<table_number>", methods=["POST"])
 def remove_table(table_number):
-    os.remove(Tables.query.filter_by(number=table_number).first().path)
+    filename = Tables.query.filter_by(number=table_number).first().qrfilename
+    delete_image(S3_RES, filename)
     Tables.query.filter_by(number=table_number).delete()
     db.session.commit()
     return redirect(url_for("tables"))
@@ -279,7 +290,7 @@ def remove_table(table_number):
 @login_required
 @app.route('/qrdownload/<table_number>', methods=["GET"])
 def qrdownload(table_number):
-    return send_file(Tables.query.filter_by(number=table_number).first().path[4:], as_attachment=True)
+    return send_file(Tables.query.filter_by(number=table_number).first().qrurl)
 
 @login_required
 @app.route("/menu", methods=["GET"])
@@ -302,9 +313,11 @@ def add_category():
     if MenuCategory.query.filter_by(name=category_form.name.data).first():
         flash(u"Category already exists", "exists_error")
     elif category_form.validate_on_submit():
+        filename, thumbnail = upload_image(S3_CLI, category_form.name.data, image=category_form.thumbnail.data)
         category = MenuCategory(
             name=category_form.name.data,
-            thumbnail = handle_image(category_form.thumbnail.data, category_form.name.data, app.config['CATGS_FOLDER'])
+            filename=filename,
+            thumbnail=thumbnail,
         )
         db.session.add(category)
         db.session.commit()
@@ -318,9 +331,9 @@ def add_category():
 def remove_category(category_id):
     category = MenuCategory.query.filter_by(id=category_id).first()
     for dish in category.dishes:
-        os.remove(os.path.join("app", dish.thumbnail))
+        delete_image(S3_RES, dish.filename)
         db.session.delete(dish)
-    os.remove(os.path.join("app", category.thumbnail))
+    delete_image(S3_RES, category.filename)
     db.session.delete(category)
     db.session.commit()
 
@@ -344,6 +357,7 @@ def add_dish():
                 )
                 db.session.add(ingr)
 
+        filename, thumbnail = upload_image(S3_CLI, dish_form.title.data, image=dish_form.thumbnail.data)
         dish = MenuDish(
             category = dish_form.categories.data,
             title = dish_form.title.data,
@@ -351,7 +365,8 @@ def add_dish():
             ingredients = dish_form.ingredients.data[:-1],
             price = dish_form.price.data,
             preparation_time = dish_form.preparation_time.data,
-            thumbnail = handle_image(dish_form.thumbnail.data, dish_form.title.data, app.config['DSHES_FOLDER'])
+            filename=filename,
+            thumbnail=thumbnail,
         )
         db.session.add(dish)
         db.session.commit()
@@ -364,7 +379,7 @@ def add_dish():
 @app.route("/dish_remove/<dish_id>", methods=["GET"])
 def remove_dish(dish_id):
     dish = MenuDish.query.filter_by(id=dish_id).first()
-    os.remove(os.path.join("app", dish.thumbnail))
+    delete_image(S3_RES, dish.filename)
     db.session.delete(dish)
     db.session.commit()
     return redirect(url_for("menu"))

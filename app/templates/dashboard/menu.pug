@@ -38,7 +38,7 @@ block content
     each category, ci in categories
         div(class="menu")
             div(class="category")
-                img(class="thumbnail" src="{{ url_for( 'def_home') }}{{ category.thumbnail }}")
+                img(class="thumbnail" src="{{ category.thumbnail }}")
                 div(class="info")
                     h3 {{ category.name }}
                     a(href="category_remove/{{ category.id }}") REMOVE
@@ -46,11 +46,11 @@ block content
             each dish, di in category.dishes
                 div(class="card")
                     div
-                        img(class="thumbnail" src="{{ url_for( 'def_home') }}{{ dish.thumbnail }}")
-                        div(class="details separator bottom")
+                        img(class="thumbnail" src="{{ dish.thumbnail }}")
+                        div(class="details")
                             h3 {{ dish.title }}
                             p {{ dish.description }}
-                    div(class="lineflex price")
+                    div(class="lineflex price separator top")
                         div(class="imgdesc separator right")
                             img(src="{{ url_for( 'static', filename='img/icons/price-tag.png' ) }}")
                             h4 {{ dish.price }} MDL
@@ -79,6 +79,6 @@ block content
                                         td -
 
                     div(class="lineflex")
-                        a(href="dish_remove/{{ dish.id }}") REMOVE
+                        a(class="button" href="dish_remove/{{ dish.id }}") REMOVE
 
     script(src="{{ url_for( 'static', filename='js/menu.js' ) }}")

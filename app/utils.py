@@ -15,12 +15,6 @@ def handle_cart(cart, dish_db):
 
     return products, int(total_price * 100), preparation_time
 
-def handle_image(image, filename, path):
-    name = secure_filename('.'.join([filename, image.filename.split(".")[1]]))
-    path = os.path.join(path, name)
-    image.save(path)
-    return path[4:]
-
 def load_orders(orders_db, order_statuses):
     products, orders = {}, {}
     products['placed_products'], products['active_products'], products['completed_products'] = [], [], []
@@ -45,6 +39,24 @@ def load_orders(orders_db, order_statuses):
 def get_all_ingredients(category_db, dish_db):
     return [[[[ing for ing in ing_list.split("-")] for ing_list in dishes_.ingredients.split("|")] for dishes_ in dish_db.query.filter_by(category=cat.id).all()] for cat in category_db.query.all()]
 
-def upload_image(*args):
-    #   WIP
-    return False
+def upload_image(s3, filename, image=False):
+    filename = secure_filename(filename)
+    if not ".png" in filename:
+        filename += ".png"
+    if image:
+        image.save(filename)
+
+    s3.upload_file(
+        Bucket = os.environ["S3_BUCKET"],
+        Filename=filename,
+        Key=filename,
+        ExtraArgs={
+            "ACL": 'public-read-write',
+        }
+    )
+    os.remove(filename)
+
+    return filename, 'http://{}.s3.amazonaws.com/{}'.format(os.environ["S3_BUCKET"], filename)
+
+def delete_image(s3, filename):
+    s3.Object(os.environ["S3_BUCKET"], filename).delete()

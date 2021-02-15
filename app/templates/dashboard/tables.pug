@@ -48,8 +48,8 @@ block content
                             | N/A
                     td {{ table.description }}
                     td
-                        a(href="qrview/{{ table.number }}" target="_blank")
-                            img(class="qr" src="{{ table.imgurl }}")
+                        a(href="{{ table.qrurl }}" target="_blank")
+                            img(class="qr" src="{{ table.qrurl }}")
 
     div
         h3 Disabled Tables
