@@ -1,7 +1,27 @@
-a(href="{{ url_for('backdoor') }}") LOGIN
+!!! 5
 
-h1 PUBLIC MENU VIEW
-include includes/errors.html
-each category in categories
-    br
-    a(href="{{ url_for('def_home') }}category/{{ category.name }}") {{ category.name }}
+html(lang="en")
+    include includes/general/head.pug
+
+    body
+        include includes/general/header.pug
+
+        div(class="content")
+            {{table}}
+
+        div(class="categories")
+            each category in categories
+                div(class="category")
+                    div(class="viewable")
+                        div(class="details")
+                            img(class="thumbnail" src="{{ category.thumbnail }}")
+                            img(class="back" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
+                            h2 {{ category.name }}
+                        div(class="dishes")
+                            each dish in category.dishes 
+                                div(class="dish")
+                                    h3 {{ dish.title }}
+
+        div(class="category placeholder")
+
+    script(src="{{ url_for( 'static', filename='js/init.js' ) }}")
