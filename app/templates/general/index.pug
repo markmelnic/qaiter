@@ -4,6 +4,10 @@ html(lang="en")
     include includes/general/head.pug
 
     body
+        div(class="dish placeholder image")
+            div(class=("d back"))
+                img(class="filter" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
+
         include includes/general/header.pug
 
         div(class="content")
@@ -15,11 +19,11 @@ html(lang="en")
                     div(class="viewable")
                         div(class="details")
                             img(class="thumbnail" src="{{ category.thumbnail }}")
-                            img(class="back filter" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
+                            img(class="c back filter" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
                             h2 {{ category.name }}
                         div(class="dishes")
                             each dish in category.dishes 
-                                div(class="dish")
+                                div(class="dish item")
                                     img(src="{{ dish.thumbnail }}")
                                     div(class="data")
                                         div
@@ -28,5 +32,6 @@ html(lang="en")
                                         img(class="add filter" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
 
         div(class="category placeholder")
+        div(class="dish placeholder data")
 
     script(src="{{ url_for( 'static', filename='js/init.js' ) }}")
