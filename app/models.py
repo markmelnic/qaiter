@@ -58,7 +58,7 @@ class MenuCategory(db.Model):
 
 class MenuDish(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    price = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
     preparation_time = db.Column(db.Integer)
     title = db.Column(db.String(50), nullable=False, unique=True)
     description = db.Column(db.String(200))

@@ -15,12 +15,17 @@ html(lang="en")
                     div(class="viewable")
                         div(class="details")
                             img(class="thumbnail" src="{{ category.thumbnail }}")
-                            img(class="back" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
+                            img(class="back filter" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
                             h2 {{ category.name }}
                         div(class="dishes")
                             each dish in category.dishes 
                                 div(class="dish")
-                                    h3 {{ dish.title }}
+                                    img(src="{{ dish.thumbnail }}")
+                                    div(class="data")
+                                        div
+                                            h3 {{ dish.title }}
+                                            p {{ dish.price }}0 LEI
+                                        img(class="add filter" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
 
         div(class="category placeholder")
 

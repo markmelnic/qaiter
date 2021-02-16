@@ -35,13 +35,16 @@ $('.viewable').click(function() {
     placeholder = $('.category.placeholder')
     placeholder.html(html);
     placeholder.addClass("loaded " + type);
-    placeholder.animate({'height': '90vh'}, 300);
+    placeholder.animate({'height': '92vh'}, 300);
+    placeholder.animate({'height': '90vh'}, 150);
 });
 
 $('body').on('click','img.back',function() {
     placeholder = $('.category.placeholder')
-    placeholder.animate({'height': '0vh'}, function() {
-        placeholder.attr('class', 'category placeholder');
-        placeholder.html('');
+    placeholder.animate({'height': '91vh'}, 100, function() {
+        placeholder.animate({'height': '0vh'}, 400, function() {
+            placeholder.attr('class', 'category placeholder');
+            placeholder.html('');
+        });
     });
 });

@@ -134,7 +134,7 @@ a {
             color: $beige;
             background-color: $olive;
 
-            img.back {
+            .filter {
                 filter: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
             }
         }
@@ -143,7 +143,7 @@ a {
             color: $olive;
             background-color: $beige;
 
-            img.back {
+            .filter {
                 filter: invert(12%) sepia(8%) saturate(5416%) hue-rotate(48deg) brightness(93%) contrast(81%);
             }
         }
@@ -152,7 +152,7 @@ a {
             color: $beige;
             background-color: $black;
 
-            img.back {
+            .filter {
                 filter: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
             }
         }
@@ -160,14 +160,16 @@ a {
         .categories {
             overflow: hidden;
             margin: auto 0 0 0;
-            padding-top: 1em;
 
             >:first-child {
+                padding-top: 1em;
                 background-color: unset !important;
             }
         }
 
         .category, .category.placeholder {
+            overflow-y: scroll;
+
             div {
                 border-top-left-radius: 2em;
                 border-top-right-radius: 2em;
@@ -226,6 +228,30 @@ a {
 
                 .dishes {
                     display: unset;
+
+                    .dish {
+                        display: flex;
+                        flex-direction: column;
+                        margin: 0 auto 0 auto;
+                        padding: 0 1em 2em 1em;
+
+                        img {
+                            width: 100%;
+                            padding-bottom: .5em;
+                            border-radius: 2em;
+                        }
+
+                        .data {
+                            display: flex;
+                            flex-direction: row;
+
+                            .add {
+                                margin: auto 0 auto auto;
+                                height: 3em;
+                                width: 3em;
+                            }
+                        }
+                    }
                 }
 
                 img {
