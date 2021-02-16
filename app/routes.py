@@ -22,7 +22,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route("/", methods=["GET"])
 def def_home():
-    return render_template("general/index.pug", categories=MenuCategory.query.all())
+    return render_template("general/index.pug", categories=MenuCategory.query.all(), table=True if TABLE_NUMBER else False)
 
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):
@@ -316,7 +316,7 @@ def add_dish():
         flash(u"Dish already exists", "exists_error")
     elif dish_form.validate_on_submit():
         for ingredient in dish_form.ingredients.data.split("|")[:-1]:
-            name, qty, tpy = ingredient.split("-")
+            name, _, _ = ingredient.split("-")
             #name = name.replace(" ", "_")
             if not Ingredients.query.filter_by(name=name).first():
                 ingr = Ingredients(

@@ -266,6 +266,7 @@ body {
         padding: 1em;
         display: flex;
         flex-wrap: wrap;
+        align-content: flex-start;
 
         height: calc(100% - 2em);
         width: 82%;
@@ -582,6 +583,7 @@ body {
             display: flex;
             flex-wrap: wrap;
             padding: 1em;
+            align-content: flex-start;
 
             >* {
                 flex: 0 0 calc(33% - 2em);
