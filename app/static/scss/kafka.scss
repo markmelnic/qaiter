@@ -3,6 +3,10 @@ $olive: #283618;
 $beige: #DDA15E;
 $white: #F0ECE2;
 
+$f_olive: invert(12%) sepia(8%) saturate(5416%) hue-rotate(48deg) brightness(93%) contrast(81%);
+$f_beige: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
+
+
 $def_trans: all .3s ease;
 
 $phone: 640px;
@@ -110,10 +114,7 @@ a {
 
             img {
                 height: 3em;
-                // olive filter
-                filter: invert(12%) sepia(8%) saturate(5416%) hue-rotate(48deg) brightness(93%) contrast(81%);
-                //beige filter
-                filter: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
+                filter: $f_beige;
             }
 
             .logo {
@@ -134,8 +135,12 @@ a {
             color: $beige;
             background-color: $olive;
 
-            .filter {
-                filter: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
+            .text_background {
+                background-color: $beige;
+            }
+
+            .text_filter {
+                filter: $f_beige;
             }
         }
 
@@ -143,8 +148,12 @@ a {
             color: $olive;
             background-color: $beige;
 
-            .filter {
-                filter: invert(12%) sepia(8%) saturate(5416%) hue-rotate(48deg) brightness(93%) contrast(81%);
+            .text_background {
+                background-color: $olive;
+            }
+
+            .text_filter {
+                filter: $f_olive;
             }
         }
 
@@ -152,8 +161,12 @@ a {
             color: $beige;
             background-color: $black;
 
-            .filter {
-                filter: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
+            .text_background {
+                background-color: $beige;
+            }
+
+            .text_filter {
+                filter: $f_beige;
             }
         }
 
@@ -264,6 +277,11 @@ a {
                     width: 3em;
                 }
             }
+
+            .expanded {
+                display: none;
+            }
+
         }
 
         .dish.placeholder {
@@ -311,9 +329,14 @@ a {
                 border-top-left-radius: 2em;
                 border-top-right-radius: 2em;
 
-                .data {
+                .data, .expanded {
                     margin: 2em 1em 0 1em;
                 } 
+
+                .expanded {
+                    display: unset;
+                    margin: 1em 1em 0 1em;
+                }
             }
         }
     }

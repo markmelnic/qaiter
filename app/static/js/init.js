@@ -49,7 +49,6 @@ $('body').on('click','.c.back',function() {
 $('body').on('click','.dish.item',function() {
     html = $(this).html();
     type = $('.category.placeholder').attr('class').split(' ')[3];
-    console.log(type)
 
     placeholder_image = $('.dish.placeholder.image')
     placeholder_image.addClass(type);
@@ -58,8 +57,9 @@ $('body').on('click','.dish.item',function() {
 
     placeholder = $('.dish.placeholder.data')
     placeholder.addClass(type);
-    placeholder.html($(this).find('.data').clone());
-    placeholder.animate({'height': '70vh'}, 600);
+    placeholder.append($(this).find('.data').clone());
+    placeholder.append($(this).find('.expanded').clone());
+    placeholder.animate({'height': '65vh'}, 600);
 });
 
 $('body').on('click','.d.back',function() {
