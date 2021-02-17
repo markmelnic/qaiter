@@ -1,6 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
-from app import BUCKET, S3_CLI, S3_RES
+from app import db, APP_SETTINGS, S3_CLI, S3_RES
 
 def handle_cart(cart, dish_db):
     products = []
@@ -48,7 +48,7 @@ def upload_image(filename, image=False):
         image.save(filename)
 
     S3_CLI.upload_file(
-        Bucket = BUCKET,
+        Bucket = APP_SETTINGS.aws_s3_bucket,
         Filename=filename,
         Key=filename,
         ExtraArgs={
@@ -57,7 +57,7 @@ def upload_image(filename, image=False):
     )
     os.remove(filename)
 
-    return filename, 'http://{}.s3.amazonaws.com/{}'.format(BUCKET, filename)
+    return filename, 'http://{}.s3.amazonaws.com/{}'.format(APP_SETTINGS.aws_s3_bucket, filename)
 
 def delete_image(filename):
-    S3_RES.Object(BUCKET, filename).delete()
+    S3_RES.Object(APP_SETTINGS.aws_s3_bucket, filename).delete()

@@ -48,7 +48,6 @@ if not Settings.query.first():
 APP_SETTINGS = Settings.query.first()
 stripe.api_key = APP_SETTINGS.stripe_secret_key
 
-BUCKET = APP_SETTINGS.aws_s3_bucket
 S3_CLI = boto3.client(
     "s3",
     aws_access_key_id=APP_SETTINGS.aws_s3_key_id,
