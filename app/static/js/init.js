@@ -44,6 +44,7 @@ $('.viewable').click(function() {
     placeholder = $('.category.placeholder')
     placeholder.html($(this).html());
     placeholder.addClass("loaded " + $(this).attr('class').split(' ')[1]);
+    placeholder.find('.details').addClass('c back');
     placeholder.animate({'height': '92vh'}, 300);
     placeholder.animate({'height': '90vh'}, 150);
 });

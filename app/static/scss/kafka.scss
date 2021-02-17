@@ -190,7 +190,7 @@ a {
             margin: auto 0 0 0;
 
             >* {
-                padding-top: .5em;
+                padding-top: .75em;
             }
 
             >:first-child {
@@ -198,7 +198,7 @@ a {
             }
 
             >:last-child>div {
-                padding-bottom: .5em;
+                padding-bottom: .75em;
             }
         }
 
@@ -214,7 +214,7 @@ a {
                     cursor: pointer;        
                     display: flex;
                     flex-direction: row;    
-                    padding: .5em 0 0 1em;
+                    padding: .75em 0 0 1em;
 
                     -webkit-box-shadow: 0em -.1em .3em 0em rgba(19,17,18,0.6);
                     -moz-box-shadow:    0em -.1em .3em 0em rgba(19,17,18,0.6);
