@@ -29,7 +29,7 @@ html(lang="en")
                                         div
                                             h4 {{ dish.title }}
                                             p {{ dish.price }}0 LEI
-                                        img(class="add filter text" src="{{ url_for( 'static', filename='img/icons/plus.png' ) }}")
+                                        img(class="add filter text" dish="{{ dish.title }}" price="{{ dish.price }}" src="{{ url_for( 'static', filename='img/icons/plus.png' ) }}")
                                     div(class="expanded")
                                         p {{ dish.description }}
                                         h5 {{ dish.preparation_time }} minutes
@@ -37,5 +37,9 @@ html(lang="en")
 
         div(class="category placeholder")
         div(class="dish placeholder data")
+        div(class="cart")
+            h5(class="count")
+            h5(class="total")
+
 
     script(src="{{ url_for( 'static', filename='js/init.js' ) }}")

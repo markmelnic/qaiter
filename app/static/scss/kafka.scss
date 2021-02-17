@@ -261,7 +261,15 @@ a {
             border-top-right-radius: 2em;
 
             .details {
-                margin-bottom: 1em;
+                z-index: 4;
+                cursor: pointer;        
+                width: 100vw;
+                position: fixed;
+                background-color: inherit;
+                padding-bottom: .5em !important;
+
+                border-bottom-left-radius: 2em;
+                border-bottom-right-radius: 2em;
 
                 -webkit-box-shadow: none !important;
                 -moz-box-shadow:    none !important;
@@ -269,7 +277,7 @@ a {
             }
 
             .dishes {
-                display: unset;
+                padding-top: 4em;
             }
 
             img {
@@ -321,10 +329,14 @@ a {
             left: 0;
             margin: 0;
             padding: 0;
+            overflow: hidden;
             overflow-y: scroll;
 
+            border-bottom-left-radius: 2em;
+            border-bottom-right-radius: 2em;
+
             &.image {
-                z-index: 4; 
+                z-index: 6; 
                 top: 0;
                 bottom: auto;
 
@@ -332,10 +344,11 @@ a {
                     height: 40vh;
                     border-radius: 0%;
                     object-fit: cover;
+                    padding-bottom: 0em;
                 }
 
                 .back {
-                    z-index: 5; 
+                    z-index: 7; 
                     position: absolute;
                     top: .5em;
                     left: .5em;
@@ -354,12 +367,10 @@ a {
             }
 
             &.data {
-                z-index: 5;
-                border-top-left-radius: 2em;
-                border-top-right-radius: 2em;
+                z-index: 4;
 
                 .data, .expanded {
-                    margin: 2em 1em 0 1em;
+                    margin: 7.5vh 1em 0 1em;
                 } 
 
                 .expanded {
@@ -367,6 +378,40 @@ a {
                     margin: 1em 1em 0 1em;
                 }
             }
+        }
+
+        .cart {
+            z-index: 6;
+            height: 0vh;
+            width: 100%;
+            width: -webkit-fill-available;
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            margin: 0 auto 0 auto;
+
+            display: flex;
+            flex-direction: row;
+            background-color: $white;
+
+            border-top-left-radius: 2em;
+            border-top-right-radius: 2em;
+
+            >* {
+                padding: .5em 1em .5em 1em;
+            }
+
+            .count {
+                margin: auto auto auto 0;
+            }
+
+            .total {
+                margin: auto 0 auto auto;
+            }
+        }
+
+        .cart_padder {
+            padding-bottom: 3em !important;
         }
     }
 }
