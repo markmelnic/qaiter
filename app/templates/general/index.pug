@@ -6,7 +6,7 @@ html(lang="en")
     body
         div(class="dish placeholder image")
             div(class="d back")
-                img(class="text_filter" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
+                img(class="filter text" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
 
         include includes/general/header.pug
 
@@ -19,8 +19,8 @@ html(lang="en")
                     div(class="viewable")
                         div(class="details")
                             img(class="thumbnail" src="{{ category.thumbnail }}")
-                            img(class="c back text_filter" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
-                            h2 {{ category.name }}
+                            img(class="c back filter text" src="{{ url_for( 'static', filename='img/icons/left-arrow.png' ) }}")
+                            h4 {{ category.name }}
                         div(class="dishes")
                             each dish in category.dishes 
                                 div(class="dish item")
@@ -29,10 +29,10 @@ html(lang="en")
                                         div
                                             h4 {{ dish.title }}
                                             p {{ dish.price }}0 LEI
-                                        img(class="add text_filter" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
+                                        img(class="add filter text" src="{{ url_for( 'static', filename='img/icons/add.png' ) }}")
                                     div(class="expanded")
-                                        h5 {{ dish.description }}
-                                        p {{ dish.preparaion_time }} minute
+                                        p {{ dish.description }}
+                                        h5 {{ dish.preparation_time }} minutes
                                         h4 {{ dish.ingredients }}
 
         div(class="category placeholder")

@@ -9,8 +9,14 @@ window.addEventListener('resize', () => {
 cats_nr = $('.categories').children('.category').length - 1;
 $('.categories').children('.category').each(function(i) {
     if (i % 2 == 0) {
-        $(this).addClass("utype");
-        if (i == cats_nr) {
+        if (i == 1) {
+            $(this).addClass("stype");
+        }
+        else {
+            $(this).addClass("utype");
+        }
+
+        if (i == 0) {
             $(this).find(">:first-child").addClass("stype");
         }
         else {
@@ -18,8 +24,14 @@ $('.categories').children('.category').each(function(i) {
         }
     }
     else if (i % 2 == 1) {
-        $(this).addClass("etype");
-        if (i == cats_nr) {
+        if (i == 1) {
+            $(this).addClass("stype");
+        }
+        else {
+            $(this).addClass("etype");
+        }
+
+        if (i == 0) {
             $(this).find(">:first-child").addClass("stype");
         }
         else {
@@ -53,7 +65,7 @@ $('body').on('click','.dish.item',function() {
     placeholder_image = $('.dish.placeholder.image')
     placeholder_image.addClass(type);
     placeholder_image.append($(this).find('img:first').clone());
-    placeholder_image.animate({'height': '50vh'}, 500);
+    placeholder_image.animate({'height': '40vh'}, 500);
 
     placeholder = $('.dish.placeholder.data')
     placeholder.addClass(type);

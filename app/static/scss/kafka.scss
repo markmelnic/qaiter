@@ -3,9 +3,9 @@ $olive: #283618;
 $beige: #DDA15E;
 $white: #F0ECE2;
 
+$f_black: invert(4%) sepia(5%) saturate(1021%) hue-rotate(278deg) brightness(94%) contrast(94%);
 $f_olive: invert(12%) sepia(8%) saturate(5416%) hue-rotate(48deg) brightness(93%) contrast(81%);
 $f_beige: invert(70%) sepia(36%) saturate(591%) hue-rotate(349deg) brightness(92%) contrast(88%);
-
 
 $def_trans: all .3s ease;
 
@@ -139,8 +139,13 @@ a {
                 background-color: $beige;
             }
 
-            .text_filter {
-                filter: $f_beige;
+            .filter {
+                &.text {
+                    filter: $f_beige;
+                }
+                &.background {
+                    filter: $f_olive;
+                }
             }
         }
 
@@ -152,8 +157,13 @@ a {
                 background-color: $olive;
             }
 
-            .text_filter {
-                filter: $f_olive;
+            .filter {
+                &.text {
+                    filter: $f_olive;
+                }
+                &.background {
+                    filter: $f_beige;
+                }
             }
         }
 
@@ -165,8 +175,13 @@ a {
                 background-color: $beige;
             }
 
-            .text_filter {
-                filter: $f_beige;
+            .filter {
+                &.text {
+                    filter: $f_beige;
+                }
+                &.background {
+                    filter: $f_black;
+                }
             }
         }
 
@@ -174,9 +189,16 @@ a {
             overflow: hidden;
             margin: auto 0 0 0;
 
+            >* {
+                padding-top: .5em;
+            }
+
             >:first-child {
-                padding-top: 1em;
                 background-color: unset !important;
+            }
+
+            >:last-child>div {
+                padding-bottom: .5em;
             }
         }
 
@@ -192,18 +214,18 @@ a {
                     cursor: pointer;        
                     display: flex;
                     flex-direction: row;    
-                    padding: 1em 0 1em 1em;
+                    padding: .5em 0 0 1em;
 
-                    -webkit-box-shadow: 0em -.1em .5em 0em rgba(19,17,18,0.6);
-                    -moz-box-shadow:    0em -.1em .5em 0em rgba(19,17,18,0.6);
-                    box-shadow:         0em -.1em .5em 0em rgba(19,17,18,0.6);
+                    -webkit-box-shadow: 0em -.1em .3em 0em rgba(19,17,18,0.6);
+                    -moz-box-shadow:    0em -.1em .3em 0em rgba(19,17,18,0.6);
+                    box-shadow:         0em -.1em .3em 0em rgba(19,17,18,0.6);    
 
                     transition: $def_trans;
                     text-decoration: none;
 
                     img {
-                        padding-right: 2em;
-                        height: 3em;
+                        padding-right: 1em;
+                        height: 2em;
 
                         &.thumbnail {
                             display: unset;
@@ -229,14 +251,21 @@ a {
             bottom: 0; 
             left: 0;
             margin: 0;
+            padding-top: 0em !important;
+
+            -webkit-box-shadow: 0em -.1em .3em 0em rgba(19,17,18,0.6);
+            -moz-box-shadow:    0em -.1em .3em 0em rgba(19,17,18,0.6);
+            box-shadow:         0em -.1em .3em 0em rgba(19,17,18,0.6);    
 
             border-top-left-radius: 2em;
             border-top-right-radius: 2em;
 
             .details {
-                -webkit-box-shadow: none;
-                -moz-box-shadow:    none;
-                box-shadow:         none;    
+                margin-bottom: 1em;
+
+                -webkit-box-shadow: none !important;
+                -moz-box-shadow:    none !important;
+                box-shadow:         none !important;
             }
 
             .dishes {
