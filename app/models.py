@@ -25,8 +25,8 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(60), nullable=False)
 
-    firstname = db.Column(db.String(30))
-    surname = db.Column(db.String(30))
+    firstname = db.Column(db.String)
+    surname = db.Column(db.String)
     profile_picture = db.Column(db.String, nullable=False, default="default-user.png")
 
     def __repr__(self):
@@ -37,9 +37,9 @@ class Tables(db.Model):
     number = db.Column(db.Integer, nullable=False, unique=True)
     seats = db.Column(db.Integer, nullable=True)
     description = db.Column(db.String, nullable=True)
-    url = db.Column(db.String(120), nullable=False)
+    url = db.Column(db.String, nullable=False)
     qrfilename = db.Column(db.String, nullable=False)
-    qrurl = db.Column(db.String(120), nullable=False)
+    qrurl = db.Column(db.String, nullable=False)
     status = db.Column(db.Boolean, nullable=False, default=True)
 
     def __repr__(self):
@@ -60,8 +60,8 @@ class MenuDish(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Float, nullable=False)
     preparation_time = db.Column(db.Integer)
-    title = db.Column(db.String(50), nullable=False, unique=True)
-    description = db.Column(db.String(200))
+    title = db.Column(db.String, nullable=False, unique=True)
+    description = db.Column(db.String)
     ingredients = db.Column(db.String)
 
     filename = db.Column(db.String)
