@@ -56,23 +56,17 @@ var set = function(item, img, price, new_value) {
     $.each(CART, function(i, element) {
         count += element['count'];
         total += element['price'] * element['count'];
-        let cart_item = '<div class="item"><h5>x'+element["count"]+'</h5><img src="'+element["img"]+'"><p>'+i+'</p><h5>'+element["price"]+'0</h5></div>';
+        let cart_item = '<div dish="'+i+'" class="item"><h5 class="nr">x'+element["count"]+'</h5><img src="'+element["img"]+'"><p>'+i+'</p><h5>'+element["price"]+'0</h5><img class="minus" src="/static/img/icons/minus.png"></div>';
         $('.cart .full').append(cart_item);
-        console.log(cart_item)
     });
 
-    $(".count").text("x" + count);
-    $(".total").text("MDL " + total + ".00");
+    $(".total").text(total + ".00 LEI");
 
-    $('.cart').animate({'height': '3em'}, 150);
-    $('.categories .category:last-child>div>div').addClass("cart_padder");
-    $('.category.placeholder').addClass("cart_padder");
-
-    //$('.categories .category:last-child>div>div').animate({'padding-bottom': '3em'}, 150);
-    //$('.category.placeholder').animate({'padding-bottom': '3em'}, 150);
+    $('.cart').animate({'height': '4em'}, 300);
+    $('.categories .category:last-child').find('.details').addClass("cart_padder");
 };
 
-$('body').on('click','.cart',function() {
+$('body').on('click','.cart:not(.extended)',function() {
     $(this).addClass("extended");
     $(this).animate({'height': '100%'}, 300);
 });
@@ -80,7 +74,7 @@ $('body').on('click','.cart',function() {
 $('body').on('click','.cart .hide',function(event) {
     event.stopPropagation();
     $('.cart').removeClass("extended");
-    $('.cart').animate({'height': '3em'}, 300);
+    $('.cart').animate({'height': '4em'}, 300);
 });
 
 $('body').on('click','.add',function(event) {
@@ -100,9 +94,23 @@ $('body').on('click','.add',function(event) {
     console.log("ADDED", CART);
 });
 
-$('body').on('click','.remove',function() {
-    dish = $(this).attr('dish');
-    console.log("REMOVED", CART);
+$('body').on('click','.minus',function() {
+    item = $(this).parent();
+    dish = item.attr('dish')
+    CART[dish]['count'] -= 1;
+    if (CART[dish]['count'] == 0) {
+        delete CART[dish];
+        item.fadeOut();
+    }
+    else {
+        item.find('.nr').text('x' + CART[dish]['count']);
+    }
+
+    if (Object.keys(CART).length === 0) {
+        $('.cart').removeClass("extended");
+        $('.cart').animate({'height': '0em'}, 300);
+        $('.categories .category:last-child').find('.details').removeClass("cart_padder");
+    }
 });
 
 // animations, loaders, etc.

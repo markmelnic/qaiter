@@ -91,6 +91,7 @@ a {
         overflow-y: scroll;
         margin: 0px;
 
+        color: $black;
         background-color: $white;
 
         >* {
@@ -246,7 +247,6 @@ a {
         .loaded {
             z-index: 2; 
             //height: 0%;
-            width: 100vw;
             position: fixed; 
             bottom: 0; 
             left: 0;
@@ -262,11 +262,12 @@ a {
 
             .details {
                 z-index: 4;
-                cursor: pointer;        
-                width: 100vw;
+                cursor: pointer;      
+                width: 90%;
+                width: -webkit-fill-available;
                 position: fixed;
                 background-color: inherit;
-                padding-bottom: .5em !important;
+                padding-bottom: 1em !important;
 
                 border-bottom-left-radius: 2em;
                 border-bottom-right-radius: 2em;
@@ -278,6 +279,7 @@ a {
 
             .dishes {
                 padding-top: 4em;
+                padding-bottom: 3em;
             }
 
             img {
@@ -409,6 +411,8 @@ a {
                 .hide {
                     display: flex;
                     flex-direction: row;
+                    height: 4em;
+
                     color: $beige;
                     background-color: $black;
                     border-bottom-left-radius: 2em;
@@ -438,7 +442,7 @@ a {
                         flex-direction: row;
 
                         >* {
-                            margin: auto .5em auto .5em;
+                            margin: .25em;
                         }
 
                         :last-child {
@@ -453,14 +457,20 @@ a {
                         }
                     }    
                 }
+
+                .overall {
+                    margin-top: unset;
+                    margin-bottom: unset;
+                }
             }
 
             .overall {
                 display: flex;
                 flex-direction: row;
-                height: 3em;
+                margin-top: auto;
+                margin-bottom: auto;
 
-                .count {
+                >:first-child {
                     margin: auto auto auto 0;
                 }
 
@@ -471,7 +481,7 @@ a {
         }
 
         .cart_padder {
-            padding-bottom: 3em !important;
+            padding-bottom: 4em !important;
         }
     }
 }
