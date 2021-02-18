@@ -391,7 +391,7 @@ a {
             margin: 0 auto 0 auto;
 
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             background-color: $white;
 
             border-top-left-radius: 2em;
@@ -401,12 +401,72 @@ a {
                 padding: .5em 1em .5em 1em;
             }
 
-            .count {
-                margin: auto auto auto 0;
+            .full, .hide {
+                display: none;
             }
 
-            .total {
-                margin: auto 0 auto auto;
+            &.extended {
+                .hide {
+                    display: flex;
+                    flex-direction: row;
+                    color: $beige;
+                    background-color: $black;
+                    border-bottom-left-radius: 2em;
+                    border-bottom-right-radius: 2em;
+
+                    >* {
+                        margin: auto .5em auto .5em;
+                    }
+
+                    img {
+                        height: 3em;
+                        width: 3em;
+                        filter: $f_beige;
+                    }
+
+                    h5 {
+                        align-self: center;
+                    }
+                }
+
+                .full {
+                    display: unset;
+                    border-bottom: .2em solid $black;
+
+                    .item {
+                        display: flex;
+                        flex-direction: row;
+
+                        >* {
+                            margin: auto .5em auto .5em;
+                        }
+
+                        :last-child {
+                            margin: auto 0 auto auto;
+                        }
+
+                        img {
+                            height: 3em;
+                            width: 3em;
+                            border-radius: 100%;
+                            object-fit: cover;
+                        }
+                    }    
+                }
+            }
+
+            .overall {
+                display: flex;
+                flex-direction: row;
+                height: 3em;
+
+                .count {
+                    margin: auto auto auto 0;
+                }
+
+                .total {
+                    margin: auto 0 auto auto;
+                }
             }
         }
 

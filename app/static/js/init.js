@@ -45,22 +45,26 @@ $('.categories').children('.category').each(function(i) {
 // cart handlers
 var CART = {};
 var CartDisplay = false;
-var set = function(item, price, new_value) {
+var set = function(item, img, price, new_value) {
+    CART[item]['img'] = img;
     CART[item]['price'] = price;
     CART[item]['count'] = new_value;
 
-    count = 0;
-    total = 0;
+    let count = 0;
+    let total = 0;
+    $('.cart .full').html('');
     $.each(CART, function(i, element) {
         count += element['count'];
         total += element['price'] * element['count'];
+        let cart_item = '<div class="item"><h5>x'+element["count"]+'</h5><img src="'+element["img"]+'"><p>'+i+'</p><h5>'+element["price"]+'0</h5></div>';
+        $('.cart .full').append(cart_item);
+        console.log(cart_item)
     });
 
     $(".count").text("x" + count);
     $(".total").text("MDL " + total + ".00");
 
     $('.cart').animate({'height': '3em'}, 150);
-
     $('.categories .category:last-child>div>div').addClass("cart_padder");
     $('.category.placeholder').addClass("cart_padder");
 
@@ -68,26 +72,36 @@ var set = function(item, price, new_value) {
     //$('.category.placeholder').animate({'padding-bottom': '3em'}, 150);
 };
 
+$('body').on('click','.cart',function() {
+    $(this).addClass("extended");
+    $(this).animate({'height': '100%'}, 300);
+});
+
+$('body').on('click','.cart .hide',function(event) {
+    event.stopPropagation();
+    $('.cart').removeClass("extended");
+    $('.cart').animate({'height': '3em'}, 300);
+});
+
 $('body').on('click','.add',function(event) {
     event.stopPropagation();
 
     dish = $(this).attr('dish');
     price = $(this).attr('price');
+    img = $(this).attr('img');
     if (CART[dish] == undefined) {
         CartDisplay = true;
         CART[dish] = {};
-        set(dish, price, 1);
+        set(dish, img, price, 1);
     }
     else {
-        set(dish, price, CART[dish]['count'] + 1);
+        set(dish, img, price, CART[dish]['count'] + 1);
     }
     console.log("ADDED", CART);
 });
 
 $('body').on('click','.remove',function() {
     dish = $(this).attr('dish');
-    price = $(this).attr('price');
-    set(dish, price, CART[dish]['count'] - 1);
     console.log("REMOVED", CART);
 });
 
@@ -139,7 +153,7 @@ $('body').on('click','.dish.item',function() {
     placeholder = $('.dish.placeholder.data')
     placeholder.addClass(type);
     placeholder.append($(this).find('.data').clone());
-    placeholder.append($(this).find('.expanded').clone());
+    placeholder.append($(this).find('.open').clone());
     placeholder.animate({'height': '65%'}, 600);
 });
 
