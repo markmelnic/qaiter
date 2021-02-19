@@ -22,7 +22,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route("/", methods=["GET"])
 def def_home():
-    return render_template("general/index.pug", categories=MenuCategory.query.all(), table=True if TABLE_NUMBER else False)
+    categories = [c for c in MenuCategory.query.all() if c.dishes]
+    return render_template("general/index.pug", categories=categories, table=True if TABLE_NUMBER else False)
 
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):

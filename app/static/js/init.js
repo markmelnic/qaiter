@@ -45,25 +45,34 @@ $('.categories').children('.category').each(function(i) {
 // cart handlers
 var CART = {};
 var CartDisplay = false;
-var set = function(item, img, price, new_value) {
-    CART[item]['img'] = img;
+var setCart = function(item, img, price, new_value, reload) {
+    let anim = Boolean(CART[item]['count'] < new_value || CART[item]['count'] == undefined);
+
+    if (img) {
+        CART[item]['img'] = img;
+    }
     CART[item]['price'] = price;
     CART[item]['count'] = new_value;
 
     let count = 0;
     let total = 0;
-    $('.cart .full').html('');
+    if (reload) {
+        $('.cart .full').html('');
+    }
     $.each(CART, function(i, element) {
         count += element['count'];
         total += element['price'] * element['count'];
-        let cart_item = '<div dish="'+i+'" class="item"><h5 class="nr">x'+element["count"]+'</h5><img src="'+element["img"]+'"><p>'+i+'</p><h5>'+element["price"]+'0</h5><img class="minus" src="/static/img/icons/minus.png"></div>';
-        $('.cart .full').append(cart_item);
+        if (reload) {
+            let cart_item = '<div dish="'+i+'" class="item"><h5 class="nr">x'+element["count"]+'</h5><img src="'+element["img"]+'"><p>'+i+'</p><h5>'+element["price"]+'0</h5><img class="minus" src="/static/img/icons/minus.png"></div>';
+            $('.cart .full').append(cart_item);
+        }
     });
 
-    $(".total").text(total + ".00 LEI");
-
-    $('.cart').animate({'height': '4em'}, 300);
-    $('.categories .category:last-child').find('.details').addClass("cart_padder");
+    if (anim) {
+        $(".total").text(total + ".00 LEI");
+        $('.cart').animate({'height': '4em'}, 300);
+        $('.categories .category:last-child').find('.details').addClass("cart_padder");
+    }
 };
 
 $('body').on('click','.cart:not(.extended)',function() {
@@ -86,10 +95,10 @@ $('body').on('click','.add',function(event) {
     if (CART[dish] == undefined) {
         CartDisplay = true;
         CART[dish] = {};
-        set(dish, img, price, 1);
+        setCart(dish, img, price, 1, true);
     }
     else {
-        set(dish, img, price, CART[dish]['count'] + 1);
+        setCart(dish, img, price, CART[dish]['count'] + 1, true);
     }
     console.log("ADDED", CART);
 });
@@ -97,7 +106,7 @@ $('body').on('click','.add',function(event) {
 $('body').on('click','.minus',function() {
     item = $(this).parent();
     dish = item.attr('dish')
-    CART[dish]['count'] -= 1;
+    setCart(dish, false, price, CART[dish]['count'] - 1, false);
     if (CART[dish]['count'] == 0) {
         delete CART[dish];
         item.fadeOut();
