@@ -22,8 +22,16 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route("/", methods=["GET"])
 def def_home():
+    now = datetime.datetime.now().hour
+    if 5 < now < 12:
+        greeting = 'Good Morning'
+    elif 12 < now < 18:
+        greeting = 'Good Afternoon'
+    else:
+        greeting = 'Good Evening'
+
     categories = [c for c in MenuCategory.query.all() if c.dishes]
-    return render_template("general/index.pug", categories=categories, table=True if TABLE_NUMBER else False)
+    return render_template("general/index.pug", greeting=greeting, categories=categories, table=TABLE_NUMBER)
 
 @app.route("/table/<table_number>", methods=["GET"])
 def tab_home(table_number):

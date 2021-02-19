@@ -11,7 +11,8 @@ html(lang="en")
         include includes/general/header.pug
 
         div(class="content")
-            {{table}}
+            h3 {{ greeting }}
+            p Thanks for using the digital menu system. Your table has been registered, now you can browse through the menu and order dishes you like.
 
         div(class="categories")
             each category in categories
