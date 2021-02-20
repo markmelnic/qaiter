@@ -113,6 +113,15 @@ a {
                 margin-bottom: auto;
             }
 
+            >:last-child {
+                margin-left: auto;
+                margin-right: 0;
+
+                padding: .2em;
+                //border-radius: 100%;
+                background-color: $black;
+            }
+
             img {
                 height: 3em;
                 filter: $f_beige;
@@ -130,6 +139,10 @@ a {
 
         .content {
 
+            >* {
+                margin: auto;
+                text-align: center;
+            }
         }
 
         .etype {
