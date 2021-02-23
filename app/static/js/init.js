@@ -122,6 +122,21 @@ $('body').on('click','.minus',function() {
     }
 });
 
+$('body').on('click','.confirm_order',function() {
+    $.ajax({
+        url: '/cart',
+        dataType : 'json',
+        data : JSON.stringify(CART),    
+        type: 'POST',
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+});
+
 // animations, loaders, etc.
 $('.viewable').click(function() {
     placeholder = $('.category.placeholder')
