@@ -13,11 +13,21 @@ $phone: 640px;
 $desktop: 1024px;
 
 :root {
-    font-family: 'Montserrat';
+    font-family: Montserrat, sans-serif
 }
 
 ::-webkit-scrollbar {
     display: none;
+    scroll-behavior: smooth;
+}
+
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 h1 {
