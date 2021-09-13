@@ -18,9 +18,9 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 sass.compile(dirname=('app/static/scss', 'app/static/css'), output_style='compressed')
 
 db = SQLAlchemy(app)
-migrate=Migrate(app,db) #Initializing migrate.
+migrate=Migrate(app,db)
 manager = Manager(app)
-manager.add_command('db',MigrateCommand)
+manager.add_command('db', MigrateCommand)
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
@@ -44,6 +44,7 @@ if not Users.query.filter_by(username=os.getenv('ADMIN_USER')).first():
 
 if not Settings.query.first():
     db.session.add(Settings())
+    db.session.commit()
 
 APP_SETTINGS = Settings.query.first()
 stripe.api_key = APP_SETTINGS.stripe_secret_key
